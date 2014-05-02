@@ -1,0 +1,15 @@
+12 digital pins
+6 analog pins
+
+digital pin = 1 bit
+analog pin = 10 bits
+
+
+1xxxxxxx = digital register
+
+	10xxxxxx = PIND
+	11xxxxxx = PINB
+
+0xxxxxxx = analog
+	
+	0PPxxxxx = pin number PP

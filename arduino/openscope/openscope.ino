@@ -1,61 +1,63 @@
+
+#ifndef cbi
+	#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+#ifndef sbi
+	#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+
 #define ZERO 256
 
-int pinWatch = 0;
-boolean updating = false;
-byte out;
+
+//which analog pins are being watched
+char pinWatch = 0;
+
 
 void setup()
 {
-  Serial.begin(115200);
-  //make everything an input
-  for(int i = 2; i < 14; i++)
-  {
-    pinMode(i, INPUT);
-  }
+	//set ADC prescale to 16
+	sbi(ADCSRA,ADPS2);
+	cbi(ADCSRA,ADPS1);
+	cbi(ADCSRA,ADPS0);
+
+	Serial.begin(115200);
 }
 
 void loop()
 {
-  if(!updating)
-  {
-    if(pinWatch == 64) //send only PIND
-    {
-      out = Serial.write(PIND);
-      delay(1);
-    }
-    else if(pinWatch == 128) //send only PINB
-    {
-      out = Serial.write(PINB);
-      delay(1);
-    }
-    else
-    {
-      //send requested data
-      for(int i = 0; i < 8; i++)
-      {
-        if(bitRead(pinWatch, i))
-        {
-          if(i < 6)//analog read
-          {
-            
-          }
-          else
-          {
-            
-          }
-        }
-      }
-      
-      
-    }
-  }
+	for(int p = 0; p < 6; p++)
+	{
+		if(bitRead(pinWatch, p))
+		{
+			sendPin(p);
+		}
+	}
 }
 
+void sendPin(int p)
+{
+	//xxxxxxxx
+	//[p][val]
 
+	//value is in the lowest 10 bits
+	int val = analogRead(p);
+	char part1 = val >> 5; //high-order bits
+	int shift = (sizeof(int) * 8) - 5;
+	char part2 = (val << shift) >> shift; //low-order bits
+
+	//add the pin number
+	p = p << 5;
+	part1 |= p;
+	part2 |= p;
+
+	//send
+	Serial.write(part1);
+	Serial.write(part2);
+}
+
+//called when a byte arrives from the computer
 void serialEvent()
 {
-  updating = true;
-  pinWatch = Serial.read();
-  out = Serial.write(pinWatch);
-  updating = false;
+	pinWatch = Serial.read();
+	Serial.write(pinWatch);
 }
