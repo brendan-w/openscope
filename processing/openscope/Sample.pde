@@ -1,29 +1,18 @@
 private class Sample
 {
-  //data packet
-  public int pinD = -1; //0-7
-  //public int ddrD = -1;
-  public int pinB = -1; //8-13
-  //public int ddrB = -1;
-  public int aPins[] = {-1, -1, -1, -1, -1, -1}; //A0-A5
+  public int pin = -1;
+  public int value = -1;
   public int time = -1;
   
-  public Sample(int value, boolean more, int dur)
+  public Sample()
   {
-    if(!more)
-    {
-      pinD = value;
-    }
-    else
-    {
-      pinB = value;
-    }
-    time = dur;
+    
   }
   
-  public Sample(int value, int pin, int dur)
+  public void set(int _pin, int _value, int _time)
   {
-    aPins[pin] = value;
-    time = dur;
+    pin = _pin;
+    value = _value;
+    time = _time;
   }
 }

@@ -52,35 +52,12 @@ public void serialEvent(Serial port)
 
 
 //support functions
-public int bitWrite(int data, int bit, boolean value)
+public int bitSet(int data, int bit)
 {
-  boolean current = bitRead(data, bit);
-  if(current != value)
-  {
-    if(value)
-    {
-      data += int(pow(2, bit));
-    }
-    else
-    {
-      data -= int(pow(2, bit));
-    }
-  }
-  return data;
+  data = (1 << bit) | data;
 }
   
-public boolean bitRead(int data, int bit)
+public int bitRead(int data, int bit)
 {
-  boolean result = false;
-  int div = 128;
-  for(int i = 7; i >= bit; i--)
-  {
-    if(data - div >= 0)
-    {
-      data -= div;
-      result = true;
-    }
-    div /= 2;
-  }
-  return result;
+  return (data >> bit) & 1;
 }
