@@ -1,20 +1,22 @@
 public class Buffer
 {
-  private static int sample_width = 1000;
-  private static int current = 0;
+  private int sample_width;
+  private int current;
+  private Sample[] buffer;
+  private PApplet root;
   
-  private static Sample[] buffer;
-  
-  public Buffer()
+  public Buffer(PApplet app)
   {
-    
+    root = app;
+    init(1000);
   }
   
-  private void init()
+  public void init(int _width)
   {
+    sample_width = _width;
+    current = 0;
     buffer = null;
     buffer = new Sample[sample_width];
-    current = 0;
     
     for(int i = 0; i < sample_width; i++)
     {
@@ -22,7 +24,7 @@ public class Buffer
     }
   }
   
-  public void add(int pin, int value, int time)
+  public void addSample(int pin, int value, int time)
   {
     current = current % sample_width;
     buffer[current].set(pin, value, time);
