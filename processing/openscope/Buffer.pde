@@ -8,10 +8,10 @@ public class Buffer
   public Buffer(PApplet app)
   {
     root = app;
-    init(1000);
+    setSize(1000);
   }
   
-  public void init(int _width)
+  public void setSize(int _width)
   {
     sample_width = _width;
     current = 0;
