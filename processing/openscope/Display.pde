@@ -21,7 +21,7 @@ private class Display
 
 	public void frame()
 	{
-		
+		graph.frame();
 	}
 
 	public void click(boolean down)

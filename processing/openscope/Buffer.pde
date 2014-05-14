@@ -3,11 +3,9 @@ public class Buffer
   private int sample_width;
   private int current;
   private Sample[] buffer;
-  private PApplet root;
   
-  public Buffer(PApplet app)
+  public Buffer()
   {
-    root = app;
     setSize(1000);
   }
   

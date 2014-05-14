@@ -18,7 +18,6 @@ private boolean trigger;
 private int trigger_level;
 
 //components (in order of data flow)
-private Serial port;
 private Buffer buffer;
 private Proc proc;
 private Display display;
@@ -38,7 +37,7 @@ public void setup()
 	trigger = false;
 	trigger_level = 2.5;
 	
-	buffer = new Buffer(this);
+	buffer = new Buffer();
 	proc = new Proc();
 	display = new Display(this);
 }
@@ -63,76 +62,9 @@ public void mouseMoved()
 	display.move();
 }
 
+
 //method called every time a new byte is available
 public void serialEvent(Serial port)
 {
-	int value = port.read();
-
-	if(!waiting)
-	{
-		
-	}
-	else
-	{
-		if(value == pin_watch)
-		{
-			println("Update Successful")
-			waiting = false;
-		}
-	}
-}
-
-public boolean connect(int port)
-{
-	disconnect();
-
-	try
-	{
-		port = new Serial(this, Serial.list()[port], SERIAL_RATE);
-		port.buffer(1); //1 byte buffer
-	}
-	catch(ArrayIndexOutOfBoundsException e)
-	{
-		println ("Couldn't create serial port");
-	}
-	
-	//ping until connected
-	int pings = 0;
-	while((waiting == true) && (pings <= SERIAL_TIMEOUT))
-	{
-		pushSettings(true);
-		pings++;
-	}
-	
-	if(pings < SERIAL_TIMEOUT)
-	{
-		println("Connected in " + pings + " pings");
-	}
-	else
-	{
-		println("Connected failed");
-	}
-}
-
-public void disconnect()
-{
-	if(port != null)
-	{
-		port.stop();
-		println("Disconnected");
-	}
-}
-
-public void pushSettings()
-{
-	waiting = true;
-	pin_watch = 0;
-	for(int i = 0; i < pins.length; i++)
-	{
-		if(pins[i])
-		{
-			pin_watch = bitSet(pin_watch, i)
-		}
-	}
-	port.write(pin_watch);
+	Connection.serialEvent(port)
 }
