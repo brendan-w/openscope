@@ -1,7 +1,7 @@
 private class Proc
 {
-	public void Proc()
-	{
-		
-	}
+    public void Proc()
+    {
+        
+    }
 }
