@@ -8,7 +8,8 @@ import java.awt.Point;
 import controlP5.*;
 
 //constants
-private final int num_pins = 6;
+private final int NUM_PINS = 6;
+private final int BUFFER_SIZE = 10000;
 
 //settings
 private boolean[] pins;
@@ -16,29 +17,27 @@ private boolean trigger;
 private int trigger_pin;
 private float trigger_level;
 
-//components (in order of data flow)
+//main components
 private Buffer buffer;
-private Proc proc;
 private Display display;
 
 
 //methods-------------------------------
 public void setup()
 {
-    size(1000, 520, P2D);
+    size(1000, 600, P2D);
     frameRate(30);
     colorMode(RGB);
     strokeCap(SQUARE);
     textSize(12);
     smooth();
     
-    pins = new boolean[num_pins];
+    pins = new boolean[NUM_PINS];
     trigger = false;
     trigger_pin = 0;
     trigger_level = 2.5;
     
     buffer = new Buffer();
-    proc = new Proc();
     display = new Display(this);
 }
 

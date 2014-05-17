@@ -6,17 +6,11 @@ public class Buffer
   
   public Buffer()
   {
-    setSize(1000);
-  }
-  
-  public void setSize(int _width)
-  {
-    sample_width = _width;
     current = 0;
     buffer = null;
-    buffer = new Sample[sample_width];
+    buffer = new Sample[BUFFER_SIZE];
     
-    for(int i = 0; i < sample_width; i++)
+    for(int i = 0; i < BUFFER_SIZE; i++)
     {
       buffer[i] = new Sample();
     }
@@ -24,17 +18,17 @@ public class Buffer
   
   public void addSample(int pin, int value, int time)
   {
-    current = current % sample_width;
+    current = current % BUFFER_SIZE;
     buffer[current].set(pin, value, time);
     current++;
   }
   
   public Sample[] getBuffer()
   {
-    Sample[] alignedBuffer =  new Sample[sample_width];
-    for(int i = 0; i < sample_width; i++)
+    Sample[] alignedBuffer =  new Sample[BUFFER_SIZE];
+    for(int i = 0; i < BUFFER_SIZE; i++)
     {
-      alignedBuffer[i] = buffer[(i + current) % sample_width]; 
+      alignedBuffer[i] = buffer[(i + current) % BUFFER_SIZE]; 
     }
     return alignedBuffer;
   }

@@ -1,7 +1,4 @@
-private class Proc
+private static class Proc
 {
-    public void Proc()
-    {
-        
-    }
+    
 }

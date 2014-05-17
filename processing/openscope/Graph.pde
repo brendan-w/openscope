@@ -1,6 +1,7 @@
 
 private class Graph
 {
+    //constants
     private final Point position = new Point(10, 10);
     private final Point size = new Point(900, 400);
     private final int fill_color = 30;
