@@ -16,11 +16,11 @@ char pinWatch = 0;
 void setup()
 {
 	//set ADC prescale to 16
-	sbi(ADCSRA,ADPS2);
-	cbi(ADCSRA,ADPS1);
-	cbi(ADCSRA,ADPS0);
+	//sbi(ADCSRA,ADPS2);
+	//cbi(ADCSRA,ADPS1);
+	//cbi(ADCSRA,ADPS0);
 
-	Serial.begin(115200);
+	Serial.begin(9600);
 }
 
 void loop()
@@ -42,8 +42,7 @@ void sendPin(int p)
 	//value is in the lowest 10 bits
 	int val = analogRead(p);
 	char part1 = val >> 5; //high-order bits
-	int shift = (sizeof(int) * 8) - 5;
-	char part2 = (val << shift) >> shift; //low-order bits
+	char part2 = val &= (16+8+4+2+1); //low-order bits
 
 	//add the pin number
 	p = p << 5;

@@ -1,10 +1,15 @@
 
 private class Display
 {
+    private PApplet main;
+  
     private Graph graph;
     private ControlP5 cp5;
     
     private Group connection_group;
+    private DropdownList port_list;
+    private Button connect_button;
+    
     
     private Group pin_group;
     private Toggle[] pin_toggle;
@@ -23,6 +28,7 @@ private class Display
     //constructor
     public Display(PApplet root)
     {
+        main = root;
         graph = new Graph();
         cp5 = new ControlP5(root);
         buildControllers();
@@ -37,7 +43,17 @@ private class Display
     //method called on every control event
     public void controlEvent(ControlEvent e)
     {
-        //Controller c = e.getController();
+      if(e.isController())
+      {
+        Controller c = e.getController();
+        
+        if(c == connect_button)
+        {
+          //call the connect function
+          int selectedPort = int(port_list.getValue());
+          Connection.connect(main, selectedPort, pins);
+        }
+      }
     }
 
     private void buildControllers()
@@ -101,6 +117,7 @@ private class Display
                            .setGroup(graph_scales)
                            .setBroadcast(true);
         
+        /*
         trig_slope = cp5.addRadioButton("Trigger Slope")
                         .setPosition(10, 10)
                         .setSize(40, 20)
@@ -109,6 +126,27 @@ private class Display
                         .setSpacingColumn(50)
                         .addItem("+ Slope", 0)
                         .addItem("- Slope", 1);
+        */
+                        
+        String[] ports = Connection.getPorts();
+        
+        port_list = cp5.addDropdownList("Port")
+                       .setPosition(10, 25)
+                       .setItemHeight(15)
+                       .setBarHeight(15)
+                       .setGroup(connection_group);
+                       
+        port_list.captionLabel().style().marginTop = 3;
+                       
+        for(int i = 0; i < ports.length; i++)
+        {
+          port_list.addItem(ports[i], i);
+        }
+        
+        connect_button = cp5.addButton("Connect")
+                            .setPosition(10, 96)
+                            .setSize(100, 30)
+                            .setGroup(connection_group);
          
      }
 }

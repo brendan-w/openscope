@@ -2,7 +2,7 @@ public static class Connection
 {
     //constants
     private static final int SERIAL_TIMEOUT = 1000;
-    private static final int SERIAL_RATE = 115200;
+    private static final int SERIAL_RATE = 9600;
   
     private static Serial port;
     private static boolean waiting = true; //waiting for update response from Arduino
@@ -17,6 +17,9 @@ public static class Connection
         if(!waiting)
         {
             //decode value
+            int pin = value >> 5;
+            int reading = value & (16+8+4+2+1);
+            println(reading);
         }
         else
         {
@@ -45,11 +48,14 @@ public static class Connection
         
         //ping until connected
         int pings = 0;
+        waiting = true;
         while((waiting == true) && (pings <= SERIAL_TIMEOUT))
         {
             pushSettings(pins);
             pings++;
         }
+        
+        println(pin_watch);
         
         if(pings < SERIAL_TIMEOUT)
         {

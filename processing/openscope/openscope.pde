@@ -39,6 +39,9 @@ public void setup()
     
     buffer = new Buffer();
     display = new Display(this);
+    
+    pins[0] = true;
+    pins[1] = true;
 }
 
 public void draw()
