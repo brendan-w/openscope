@@ -5,7 +5,6 @@
 //imports-------------------------------
 import processing.serial.*;
 import java.awt.Point;
-import controlP5.*;
 
 //constants
 private final int NUM_PINS = 6;
@@ -25,7 +24,7 @@ public Display display;
 //methods-------------------------------
 public void setup()
 {
-    size(1000, 600, P2D);
+    size(1000, 500, P2D);
     frameRate(25);
     colorMode(RGB);
     strokeCap(SQUARE);
@@ -51,14 +50,18 @@ public void draw()
     display.frame();
 }
 
+void mouseClicked()
+{
+    display.click();
+}
+
+void mouseMoved()
+{
+    display.refreshUI();
+}
+
 //method called every time a new byte is available
 public void serialEvent(Serial port)
 {
   Connection.serialEvent(port);
-}
-
-//method called on every control event
-public void controlEvent(ControlEvent e)
-{
-  display.controlEvent(e);
 }

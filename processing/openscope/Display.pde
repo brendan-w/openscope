@@ -4,149 +4,85 @@ private class Display
     private PApplet main;
   
     private Graph graph;
-    private ControlP5 cp5;
     
-    private Group connection_group;
-    private DropdownList port_list;
-    private Button connect_button;
+    private Button[] pinButtons;
+    private Point pinButton_pos = new Point(680, 420);
+    private Point pinButton_size = new Point(30, 30);
+    
+    private Button[] portButtons;
+    private Point portButton_pos = new Point(10, 420);
+    private Point portButton_size = new Point(80, 20);
     
     
-    private Group pin_group;
-    private Toggle[] pin_toggle;
-    
-    private Group graph_scales;
-    private Range voltage_scale;
-    private Range time_scale;
-    
-    private Group trig_pin_group;
-    private Toggle[] trig_pin_toggle;
-    
-    private Group trig_set_group;
-    private Toggle trigger;
-    private RadioButton trig_slope;
     
     //constructor
     public Display(PApplet root)
     {
         main = root;
         graph = new Graph();
-        cp5 = new ControlP5(root);
-        buildControllers();
+        buildUI();
     }
 
     public void frame()
     {
         background(0);
         graph.frame(buffer.getBuffer());
+        refreshUI();
+    }
+  
+    public void click()
+    {
+        for(int i = 0; i < pinButtons.length; i++)
+        {
+            if(pinButtons[i].isClicked())
+            {
+              pinButtons[i].value = !pinButtons[i].value;
+            }
+        }
+        
+        for(int i = 0; i < portButtons.length; i++)
+        {
+            if(portButtons[i].isClicked())
+            {
+                //connect to the requested port
+                Connection.connect(i, pins);
+            }
+        }
     }
     
-    //method called on every control event
-    public void controlEvent(ControlEvent e)
+    public void refreshUI()
     {
-      if(e.isController())
-      {
-        Controller c = e.getController();
-        
-        if(c == connect_button)
+        for(int i = 0; i < pinButtons.length; i++)
         {
-          //call the connect function
-          int selectedPort = int(port_list.getValue());
-          Connection.connect(selectedPort, pins);
+            pinButtons[i].frame();
         }
-      }
+        
+        for(int i = 0; i < portButtons.length; i++)
+        {
+            portButtons[i].frame();
+        }
     }
 
-    private void buildControllers()
+    private void buildUI()
     { 
-        connection_group = cp5.addGroup("Connection")
-                              .setPosition(10, 440)
-                              .setSize(120, 140)
-                              .setBackgroundColor(30);
-      
-        pin_group = cp5.addGroup("Pins")
-                       .setPosition(150, 440)
-                       .setSize(190, 60)
-                       .setBackgroundColor(30);
-                       
-        graph_scales = cp5.addGroup("Scales")
-                            .setPosition(350, 440)
-                            .setSize(560, 60)
-                            .setBackgroundColor(30);
-                       
-        trig_pin_group = cp5.addGroup("Trigger Pin")
-                            .setPosition(150, 520)
-                            .setSize(190, 60)
-                            .setBackgroundColor(30);
-                            
-        trig_set_group = cp5.addGroup("Trigger Settings")
-                            .setPosition(350, 520)
-                            .setSize(560, 60)
-                            .setBackgroundColor(30);
-                       
-        pin_toggle = new Toggle[NUM_PINS];
-        trig_pin_toggle = new Toggle[NUM_PINS];
+        pinButtons = new Button[NUM_PINS];
+
         for(int i = 0; i < NUM_PINS; i++)
         {
-            pin_toggle[i] = cp5.addToggle("A" + i)
-                               .setPosition(10 + (i * 30), 10)
-                               .setSize(20, 20)
-                               .setGroup(pin_group);
-            trig_pin_toggle[i] = cp5.addToggle("A" + i + " ")
-                                   .setPosition(10 + (i * 30), 10)
-                                   .setSize(20, 20)
-                                   .setGroup(trig_pin_group);
+            int offset = i * (pinButton_size.x + 10);
+            pinButtons[i] = new Button("A"+i, pinButton_pos.x + offset, pinButton_pos.y,
+                                              pinButton_size.x, pinButton_size.y);
         }
-        
-        voltage_scale = cp5.addRange("Voltage")
-                           .setBroadcast(false)
-                           .setPosition(10, 10)
-                           .setSize(500, 15)
-                           .setRange(0, 5)
-                           .setRangeValues(0, 1)
-                           .setHandleSize(15)
-                           .setGroup(graph_scales)
-                           .setBroadcast(true);
-                           
-        time_scale = cp5.addRange("Time")
-                           .setBroadcast(false)
-                           .setPosition(10, 35)
-                           .setSize(500, 15)
-                           .setRange(0, 100)
-                           .setRangeValues(0, 50)
-                           .setHandleSize(15)
-                           .setGroup(graph_scales)
-                           .setBroadcast(true);
-        
-        /*
-        trig_slope = cp5.addRadioButton("Trigger Slope")
-                        .setPosition(10, 10)
-                        .setSize(40, 20)
-                        .setGroup(trig_set_group)
-                        .setItemsPerRow(1)
-                        .setSpacingColumn(50)
-                        .addItem("+ Slope", 0)
-                        .addItem("- Slope", 1);
-        */
-                        
+
         String[] ports = Connection.getPorts();
-        
-        port_list = cp5.addDropdownList("Port")
-                       .setPosition(10, 25)
-                       .setItemHeight(15)
-                       .setBarHeight(15)
-                       .setGroup(connection_group);
-                       
-        port_list.captionLabel().style().marginTop = 3;
-                       
+        portButtons = new Button[ports.length];
         for(int i = 0; i < ports.length; i++)
         {
-          port_list.addItem(ports[i], i);
+            int offset = i * (portButton_size.x + 10);
+            portButtons[i] = new Button(ports[i], portButton_pos.x + offset, portButton_pos.y,
+                                                 portButton_size.x, portButton_size.y);
         }
-        
-        connect_button = cp5.addButton("Connect")
-                            .setPosition(10, 96)
-                            .setSize(100, 30)
-                            .setGroup(connection_group);
+
          
      }
 }
