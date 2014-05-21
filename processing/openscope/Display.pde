@@ -37,7 +37,7 @@ private class Display
     public void frame()
     {
         background(0);
-        graph.frame();
+        graph.frame(buffer.getBuffer());
     }
     
     //method called on every control event
@@ -51,7 +51,7 @@ private class Display
         {
           //call the connect function
           int selectedPort = int(port_list.getValue());
-          Connection.connect(main, selectedPort, pins);
+          Connection.connect(selectedPort, pins);
         }
       }
     }

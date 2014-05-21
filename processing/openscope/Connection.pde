@@ -1,12 +1,17 @@
 public static class Connection
 {
     //constants
-    private static final int SERIAL_TIMEOUT = 1000;
-    private static final int SERIAL_RATE = 9600;
+    private static final int SERIAL_TIMEOUT = 2000;
+    private static final int SERIAL_RATE = 4800;
   
     private static Serial port;
     private static boolean waiting = true; //waiting for update response from Arduino
     private static int pin_watch = 0;
+    
+    private static PApplet root;
+    private static Buffer buffer;
+    private static int lastPin;
+    private static int lastReading;
     
     
     //method called every time a new byte is available
@@ -19,7 +24,22 @@ public static class Connection
             //decode value
             int pin = value >> 5;
             int reading = value & (16+8+4+2+1);
-            println(reading);
+            
+            if((pin == lastPin) && (pin == 0))
+            {
+              //we've recieved a sequence, put it together
+              int voltage = lastReading << 5;
+              voltage += reading;
+              //add it to the buffer!
+              buffer.addSample(pin, voltage, root.millis());
+              //println(lastReading << 5);
+              //println(reading);
+              
+            }
+            
+            
+            lastPin = pin;
+            lastReading = reading;
         }
         else
         {
@@ -32,7 +52,7 @@ public static class Connection
         }
     }
 
-    public static boolean connect(PApplet root, int portNum, boolean[] pins)
+    public static boolean connect(int portNum, boolean[] pins)
     {
         disconnect();
 
@@ -90,6 +110,16 @@ public static class Connection
             }
         }
         port.write(pin_watch);
+    }
+
+    public static void setRoot(PApplet r)
+    {
+      root = r;
+    }
+    
+    public static void setBuffer(Buffer b)
+    {
+      buffer = b;
     }
 
     public static String[] getPorts()

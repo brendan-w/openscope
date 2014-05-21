@@ -18,8 +18,7 @@ private class Graph
         buildShapes();
     }
 
-    //public void frame(Sample[] data)
-    public void frame()
+    public void frame(Sample[] data)
     {
         //draw the frame
         fill(fill_color);
@@ -28,6 +27,25 @@ private class Graph
         rect(position.x, position.y, size.x, size.y);
 
         //draw the scale
+        
+        stroke(color(0,255,0));
+        //draw the data
+        for(int i = 0; i < data.length - 1; i++)
+        {
+          Sample here = data[i];
+          Sample next = data[i+1];
+          drawSample(here, next, i);
+        }
+    }
+    
+    private void drawSample(Sample a, Sample b, int time)
+    {
+      int xa = Util.map(time,     0, BUFFER_SIZE, position.x, position.x + size.x);
+      int xb = Util.map(time + 1, 0, BUFFER_SIZE, position.x, position.x + size.x);
+      int ya = Util.map(a.value,  0, 1024, position.y + size.y, position.y);
+      int yb = Util.map(b.value,  0, 1024, position.y + size.y, position.y);
+      
+      line(xa, ya, xb, yb);
     }
 
 

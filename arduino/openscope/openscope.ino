@@ -20,7 +20,7 @@ void setup()
 	//cbi(ADCSRA,ADPS1);
 	//cbi(ADCSRA,ADPS0);
 
-	Serial.begin(9600);
+	Serial.begin(4800);
 }
 
 void loop()
@@ -40,9 +40,21 @@ void sendPin(int p)
 	//[p][val]
 
 	//value is in the lowest 10 bits
-	int val = analogRead(p);
-	char part1 = val >> 5; //high-order bits
-	char part2 = val &= (16+8+4+2+1); //low-order bits
+/*
+	int val = 512;//analogRead(p);
+        char part1 = val & (512+256+128+64+32); //high-order bits
+	part1 = part1 >> 5;
+	char part2 = val & (16+8+4+2+1); //low-order bits
+*/
+        int val = analogRead(p);
+        int v1 = val;
+        int v2 = val;
+        v1 = v1 >> 5;
+        v1 &= (16+8+4+2+1);
+        v2 &= (16+8+4+2+1);
+        
+        char part1 = (char) v1;
+        char part2 = (char) v2;
 
 	//add the pin number
 	p = p << 5;
