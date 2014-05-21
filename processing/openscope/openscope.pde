@@ -9,13 +9,20 @@ import controlP5.*;
 
 //constants
 private final int NUM_PINS = 6;
-private final int BUFFER_SIZE = 500;
+private final int BUFFER_SIZE = 1000;
 
 //settings
 private boolean[] pins;
 private boolean trigger;
 private int trigger_pin;
 private float trigger_level;
+
+private int[] pinColors = {color(0,255,255),
+                           color(0,255,255),
+                           color(0,255,255),
+                           color(0,255,255),
+                           color(0,255,255),
+                           color(0,255,255)};
 
 //main components
 public Buffer buffer;
@@ -41,9 +48,6 @@ public void setup()
     display = new Display(this);
     Connection.setRoot(this);
     Connection.setBuffer(buffer);
-    
-    pins[0] = true;
-    pins[1] = true;
 }
 
 public void draw()

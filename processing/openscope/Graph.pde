@@ -10,7 +10,8 @@ private class Graph
 
     private PShape handle;
 
-    private int scale;
+    private int min;
+    private int max;
 
 
     public Graph()
@@ -18,23 +19,40 @@ private class Graph
         buildShapes();
     }
 
-    public void frame(Sample[] data)
+    public void frame(int _min, int _max)
     {
         //draw the frame
         fill(fill_color);
         stroke(border_color);
         strokeWeight(border_weight);
         rect(position.x, position.y, size.x, size.y);
+        noStroke();
+        fill(0);
+        rect(position.x + size.x + 1, position.y, width - position.x - size.x, size.y);
 
-        //draw the scale
+        min = _min;
+        max = _max;
         
-        stroke(color(0,255,0));
+    }
+    
+    public void drawData(Sample[] data, int c)
+    {
+        stroke(c);
         //draw the data
+        Sample lastSample = null;
         for(int i = 0; i < data.length - 1; i++)
         {
-          Sample here = data[i];
-          Sample next = data[i+1];
-          drawSample(here, next, i);
+          Sample current = data[i];
+          
+          if(current != null)
+          {
+            if(lastSample != null)
+            {
+              drawSample(lastSample, current, i);
+            }
+            
+            lastSample = current;
+          }
         }
     }
     
@@ -42,8 +60,11 @@ private class Graph
     {
       int xa = Util.map(time,     0, BUFFER_SIZE, position.x, position.x + size.x);
       int xb = Util.map(time + 1, 0, BUFFER_SIZE, position.x, position.x + size.x);
-      int ya = Util.map(a.value,  0, 1024, position.y + size.y, position.y);
-      int yb = Util.map(b.value,  0, 1024, position.y + size.y, position.y);
+      int ya = Util.map(a.value,  min, max, position.y + size.y, position.y);
+      int yb = Util.map(b.value,  min, max, position.y + size.y, position.y);
+      
+      ya = Math.max(position.y, Math.min(position.y + size.y, ya));
+      yb = Math.max(position.y, Math.min(position.y + size.y, yb));
       
       line(xa, ya, xb, yb);
     }

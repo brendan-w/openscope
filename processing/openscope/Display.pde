@@ -36,7 +36,18 @@ private class Display
     public void frame()
     {
         background(0);
-        graph.frame(buffer.getBuffer());
+        
+        int min = (int) voltage_scale.getLowValue();
+        int max = (int) voltage_scale.getHighValue();
+        graph.frame(min, max);
+        
+        for(int i = 0; i < NUM_PINS; i++)
+        {
+          if(pins[i])
+          {
+            graph.drawData(buffer.getBuffer(), pinColors[0]);  
+          }
+        }
     }
     
     //method called on every control event
@@ -51,6 +62,15 @@ private class Display
           //call the connect function
           int selectedPort = int(port_list.getValue());
           Connection.connect(selectedPort, pins);
+        }
+        
+        for(int i = 0; i < pin_toggle.length; i++)
+        {
+          if(c == pin_toggle[i])
+          {
+            pins[i] = pin_toggle[i].getState();
+            Connection.pushSettings(pins);
+          }
         }
       }
     }
@@ -100,8 +120,8 @@ private class Display
                            .setBroadcast(false)
                            .setPosition(10, 10)
                            .setSize(500, 15)
-                           .setRange(0, 5)
-                           .setRangeValues(0, 1)
+                           .setRange(0, 1024)
+                           .setRangeValues(0, 1024)
                            .setHandleSize(15)
                            .setGroup(graph_scales)
                            .setBroadcast(true);

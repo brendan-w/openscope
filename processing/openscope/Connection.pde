@@ -2,7 +2,7 @@ public static class Connection
 {
     //constants
     private static final int SERIAL_TIMEOUT = 1000;
-    private static final int SERIAL_RATE = 28800;
+    private static final int SERIAL_RATE = 38400;
   
     private static Serial port;
     private static boolean waiting = true; //waiting for update response from Arduino
@@ -18,7 +18,6 @@ public static class Connection
     {
       if(port != null)
       {
-        println(port.available());
         while(port.available() > 0)
         {
           byte[] serialBuffer = port.readBytes(); 
@@ -41,18 +40,15 @@ public static class Connection
             int pin = value >> 5;
             int reading = value & (16+8+4+2+1);
             
-            if((pin == lastPin) && (pin == 0))
+            if(pin == lastPin)
             {
               //we've recieved a sequence, put it together
               int voltage = lastReading << 5;
               voltage += reading;
               //add it to the buffer!
               buffer.addSample(pin, voltage, root.millis());
-              //println(lastReading << 5);
-              //println(reading);
-              
+              println(pin);
             }
-            
             
             lastPin = pin;
             lastReading = reading;
@@ -116,6 +112,8 @@ public static class Connection
 
     public static void pushSettings(boolean[] pins)
     {
+      if(port != null)
+      {
         waiting = true;
         pin_watch = 0;
         for(int i = 0; i < pins.length; i++)
@@ -126,6 +124,11 @@ public static class Connection
             }
         }
         port.write(pin_watch);
+      }
+      else
+      {
+        println("No Com port has been defined");
+      }
     }
 
     public static void setRoot(PApplet r)
