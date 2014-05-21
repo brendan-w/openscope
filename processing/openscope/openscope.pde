@@ -5,6 +5,7 @@
 //imports-------------------------------
 import processing.serial.*;
 import java.awt.Point;
+import controlP5.*;
 
 //constants
 private final int NUM_PINS = 6;
@@ -24,7 +25,7 @@ public Display display;
 //methods-------------------------------
 public void setup()
 {
-    size(1000, 500, P2D);
+    size(1000, 600, P2D);
     frameRate(30);
     colorMode(RGB);
     strokeCap(SQUARE);
@@ -51,12 +52,8 @@ public void draw()
     display.frame();
 }
 
-void mouseClicked()
+//method called on every control event
+public void controlEvent(ControlEvent e)
 {
-    display.click();
-}
-
-void mouseMoved()
-{
-    display.refreshUI();
+  display.controlEvent(e);
 }

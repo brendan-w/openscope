@@ -2,7 +2,7 @@ public static class Connection
 {
     //constants
     private static final int SERIAL_TIMEOUT = 1000;
-    private static final int SERIAL_RATE = 9600;
+    private static final int SERIAL_RATE = 28800;
   
     private static Serial port;
     private static boolean waiting = true; //waiting for update response from Arduino

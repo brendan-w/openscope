@@ -20,7 +20,7 @@ void setup()
 	cbi(ADCSRA,ADPS1);
 	cbi(ADCSRA,ADPS0);
 
-	Serial.begin(9600);
+	Serial.begin(28800);
 }
 
 void loop()
