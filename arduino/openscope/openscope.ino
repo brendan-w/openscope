@@ -32,6 +32,7 @@ void loop()
 			sendPin(p);
 		}
 	}
+        Serial.write(255);
 }
 
 void sendPin(int p)
@@ -40,6 +41,7 @@ void sendPin(int p)
 	//[p][val]
 
         int val = analogRead(p);
+        val = analogRead(p);
         int v1 = val;
         int v2 = val;
         v1 = v1 >> 5;

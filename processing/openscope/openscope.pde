@@ -17,12 +17,12 @@ private boolean trigger;
 private int trigger_pin;
 private float trigger_level;
 
-private int[] pinColors = {color(0,255,255),
+private int[] pinColors = {color(0,255,0),
+                           color(255,255,0),
                            color(0,255,255),
-                           color(0,255,255),
-                           color(0,255,255),
-                           color(0,255,255),
-                           color(0,255,255)};
+                           color(255,0,255),
+                           color(255,0,0),
+                           color(255,255,255)};
 
 //main components
 public Buffer buffer;
@@ -32,7 +32,7 @@ public Display display;
 //methods-------------------------------
 public void setup()
 {
-    size(1000, 600, P2D);
+    size(920, 600, P2D);
     frameRate(30);
     colorMode(RGB);
     strokeCap(SQUARE);

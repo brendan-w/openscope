@@ -33,7 +33,7 @@ public class Buffer
     return alignedBuffer;
   }
   
-  //linear interpolation between samples
+  
   public Sample[] getPin(int p)
   {
     Sample[] alignedBuffer = getBuffer();
@@ -42,8 +42,6 @@ public class Buffer
 
     for(int i = 0; i < BUFFER_SIZE; i++)
     {
-      pinBuffer[i] = null;
-      
       if(alignedBuffer[i].pin == p)
       {
         pinBuffer[i] = alignedBuffer[i];

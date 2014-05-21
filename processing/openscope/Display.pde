@@ -45,7 +45,7 @@ private class Display
         {
           if(pins[i])
           {
-            graph.drawData(buffer.getBuffer(), pinColors[0]);  
+            graph.drawData(buffer.getPin(i), pinColors[i]);  
           }
         }
     }
@@ -150,7 +150,7 @@ trig_slope = cp5.addRadioButton("Trigger Slope")
         String[] ports = Connection.getPorts();
         
         port_list = cp5.addDropdownList("Port")
-                       .setPosition(10, 25)
+                       .setPosition(10, 70)
                        .setItemHeight(15)
                        .setBarHeight(15)
                        .setGroup(connection_group);
@@ -163,7 +163,7 @@ trig_slope = cp5.addRadioButton("Trigger Slope")
         }
         
         connect_button = cp5.addButton("Connect")
-                            .setPosition(10, 96)
+                            .setPosition(10, 10)
                             .setSize(100, 30)
                             .setGroup(connection_group);
          

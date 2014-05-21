@@ -36,6 +36,8 @@ public static class Connection
 
         if(!waiting)
         {
+          if(value != 255)
+          {
             //decode value
             int pin = value >> 5;
             int reading = value & (16+8+4+2+1);
@@ -47,11 +49,15 @@ public static class Connection
               voltage += reading;
               //add it to the buffer!
               buffer.addSample(pin, voltage, root.millis());
-              println(pin);
             }
             
             lastPin = pin;
             lastReading = reading;
+          }
+          else
+          {
+            lastPin = -1;
+          }
         }
         else
         {
@@ -64,7 +70,7 @@ public static class Connection
         }
     }
 
-    public static boolean connect(int portNum, boolean[] pins)
+    public static void connect(int portNum, boolean[] pins)
     {
         disconnect();
 
@@ -87,17 +93,9 @@ public static class Connection
             pings++;
         }
         
-        println(pin_watch);
-        
         if(pings < SERIAL_TIMEOUT)
         {
             println("Connected in " + pings + " pings");
-            return true;
-        }
-        else
-        {
-            println("Connected failed");
-            return false;
         }
     }
 

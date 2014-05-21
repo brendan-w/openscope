@@ -5,7 +5,7 @@ private class Graph
     private final Point position = new Point(10, 10);
     private final Point size = new Point(900, 400);
     private final int fill_color = 30;
-    private final int border_color = 50;
+    private final int border_color = 70;
     private final int border_weight = 1;
 
     private PShape handle;
@@ -26,17 +26,32 @@ private class Graph
         stroke(border_color);
         strokeWeight(border_weight);
         rect(position.x, position.y, size.x, size.y);
-        noStroke();
-        fill(0);
-        rect(position.x + size.x + 1, position.y, width - position.x - size.x, size.y);
 
         min = _min;
         max = _max;
+        
+        //draw scale
+        for(int i = 1; i < 5; i++)
+        {
+          int val = (1024 / 5) * i;
+          if((val > min) && (val < max))
+          {
+            val = Util.map(val, min, max, position.y + size.y, position.y);
+            line(position.x, val, position.x + size.x, val);
+          }
+        }
+        
+        /*
+        noStroke();
+        fill(0);
+        rect(position.x + size.x + 1, position.y, width - position.x - size.x, size.y);
+        */
         
     }
     
     public void drawData(Sample[] data, int c)
     {
+        strokeWeight(2);
         stroke(c);
         //draw the data
         Sample lastSample = null;
