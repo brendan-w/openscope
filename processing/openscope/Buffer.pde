@@ -34,13 +34,13 @@ public class Buffer
   }
   
   
-  public Sample[] getPin(int p)
+  public Sample[] getPin(int p, int time)
   {
     Sample[] alignedBuffer = getBuffer();
-    Sample[] pinBuffer =  new Sample[BUFFER_SIZE];
+    Sample[] pinBuffer =  new Sample[time];
 
 
-    for(int i = 0; i < BUFFER_SIZE; i++)
+    for(int i = 0; i < time; i++)
     {
       if(alignedBuffer[i].pin == p)
       {

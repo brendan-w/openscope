@@ -12,6 +12,7 @@ private class Graph
 
     private int min;
     private int max;
+    private int time;
 
 
     public Graph()
@@ -19,7 +20,7 @@ private class Graph
         buildShapes();
     }
 
-    public void frame(int _min, int _max)
+    public void frame(int _min, int _max, int _time)
     {
         //draw the frame
         fill(fill_color);
@@ -29,8 +30,9 @@ private class Graph
 
         min = _min;
         max = _max;
+        time = _time;
         
-        //draw scale
+        //draw voltage scale
         for(int i = 1; i < 5; i++)
         {
           int val = (1024 / 5) * i;
@@ -38,6 +40,17 @@ private class Graph
           {
             val = Util.map(val, min, max, position.y + size.y, position.y);
             line(position.x, val, position.x + size.x, val);
+          }
+        }
+        
+        //draw voltage scale
+        for(int i = 1; i < 10; i++)
+        {
+          int val = (BUFFER_SIZE / 10) * i;
+          if(val < time)
+          {
+            val = Util.map(val, 0, time, position.x, position.x + size.x);
+            line(val, position.y, val, position.y + size.y);
           }
         }
         
@@ -71,10 +84,10 @@ private class Graph
         }
     }
     
-    private void drawSample(Sample a, Sample b, int time)
+    private void drawSample(Sample a, Sample b, int time_index)
     {
-      int xa = Util.map(time,     0, BUFFER_SIZE, position.x, position.x + size.x);
-      int xb = Util.map(time + 1, 0, BUFFER_SIZE, position.x, position.x + size.x);
+      int xa = Util.map(time_index,     0, time, position.x, position.x + size.x);
+      int xb = Util.map(time_index + 1, 0, time, position.x, position.x + size.x);
       int ya = Util.map(a.value,  min, max, position.y + size.y, position.y);
       int yb = Util.map(b.value,  min, max, position.y + size.y, position.y);
       

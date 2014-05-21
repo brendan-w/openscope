@@ -39,13 +39,17 @@ private class Display
         
         int min = (int) voltage_scale.getLowValue();
         int max = (int) voltage_scale.getHighValue();
-        graph.frame(min, max);
+        int time = (int) time_scale.getHighValue();
+        
+        if(min == 0) { min = 1; }
+        
+        graph.frame(min, max, time);
         
         for(int i = 0; i < NUM_PINS; i++)
         {
           if(pins[i])
           {
-            graph.drawData(buffer.getPin(i), pinColors[i]);  
+            graph.drawData(buffer.getPin(i, time), pinColors[i]);  
           }
         }
     }
@@ -130,8 +134,8 @@ private class Display
                            .setBroadcast(false)
                            .setPosition(10, 35)
                            .setSize(500, 15)
-                           .setRange(0, 100)
-                           .setRangeValues(0, 50)
+                           .setRange(0, 1000)
+                           .setRangeValues(0, 1000)
                            .setHandleSize(15)
                            .setGroup(graph_scales)
                            .setBroadcast(true);
