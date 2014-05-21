@@ -8,7 +8,7 @@ import java.awt.Point;
 
 //constants
 private final int NUM_PINS = 6;
-private final int BUFFER_SIZE = 150;
+private final int BUFFER_SIZE = 500;
 
 //settings
 private boolean[] pins;
@@ -25,7 +25,7 @@ public Display display;
 public void setup()
 {
     size(1000, 500, P2D);
-    frameRate(25);
+    frameRate(30);
     colorMode(RGB);
     strokeCap(SQUARE);
     textSize(12);
@@ -47,6 +47,7 @@ public void setup()
 
 public void draw()
 {
+    Connection.getData();
     display.frame();
 }
 
@@ -58,10 +59,4 @@ void mouseClicked()
 void mouseMoved()
 {
     display.refreshUI();
-}
-
-//method called every time a new byte is available
-public void serialEvent(Serial port)
-{
-  Connection.serialEvent(port);
 }

@@ -1,8 +1,8 @@
 public static class Connection
 {
     //constants
-    private static final int SERIAL_TIMEOUT = 2000;
-    private static final int SERIAL_RATE = 4800;
+    private static final int SERIAL_TIMEOUT = 1000;
+    private static final int SERIAL_RATE = 9600;
   
     private static Serial port;
     private static boolean waiting = true; //waiting for update response from Arduino
@@ -14,10 +14,26 @@ public static class Connection
     private static int lastReading;
     
     
-    //method called every time a new byte is available
-    public static void serialEvent(Serial port)
+    public static void getData()
     {
-        int value = port.read();
+      if(port != null)
+      {
+        println(port.available());
+        while(port.available() > 0)
+        {
+          byte[] serialBuffer = port.readBytes(); 
+          for(int i = 0; i < serialBuffer.length; i++)
+          {
+            parseData(serialBuffer[i]);
+          }
+        }
+      }
+    }
+    
+    //method called every time a new byte is available
+    public static void parseData(byte data)
+    {
+        int value = (int) data;
 
         if(!waiting)
         {
