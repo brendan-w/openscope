@@ -2,21 +2,28 @@
     Written by Brendan Whitfield
 */
 
-//imports-------------------------------
-import java.util.Iterator;
-import processing.serial.*;
+//imports
 import java.awt.Point;
+import java.util.Iterator;
+import java.text.DecimalFormat;
+import processing.serial.*;
 import controlP5.*;
 
 //constants
-private final int NUM_PINS = 6;
-private final int BUFFER_SIZE = 1000;
-private final int SERIAL_RATE = 38400;
+private static final float VOLTAGE_MAX = 5.0;
+private static final int READING_MAX = 1024;
+private static final int NUM_PINS = 6;
+private static final int BUFFER_SIZE = 1024;
+private static final int SERIAL_RATE = 38400;
 
 
-private final int fillColor = 30;
-private final int strokeColor = 70;
-private final int[] pinColors = {
+private final int TEXT_SIZE = 12;
+private final int TEXT_PAD = 5;
+private final int LINE_HEIGHT = TEXT_SIZE + TEXT_PAD;
+private final int FILL_COLOR = 30;
+private final int STROKE_COLOR = 70;
+private final int SIGNAL_WEIGHT = 2;
+private final int[] SIGNAL_COLORS = {
   color(0  , 255, 0  ),
   color(255, 255, 0  ),
   color(0  , 255, 255),
@@ -31,20 +38,20 @@ public Controls controls;
 public Graph graph;
 
 
-
 public void setup()
 {
     size(920, 600, P2D);
     frameRate(30);
     colorMode(RGB);
     strokeCap(SQUARE);
-    textSize(12);
+    textSize(TEXT_SIZE);
     smooth();
     
     connection = null;
     controls = new Controls(this);
     graph = new Graph(this);
 }
+
 
 public void draw()
 {
@@ -75,9 +82,7 @@ public void controlEvent(ControlEvent e)
   }
 }
 
-
-
-
+//creates a new connection object on the selected port
 public void connect()
 {
   if(connection != null)
@@ -88,6 +93,7 @@ public void connect()
   connection = new Connection(this, controls.getSettings());
 }
 
+//pushes new settings to the arduino
 public void updateArduino()
 {
   if(connection != null)

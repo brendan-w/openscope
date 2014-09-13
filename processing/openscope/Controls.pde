@@ -50,8 +50,8 @@ private class Controls
         }
         else if(c == voltage_scale) //VOLTAGE SCALE CHANGE
         {
-          settings.v_min = (int) voltage_scale.getLowValue();
-          settings.v_max = (int) voltage_scale.getHighValue();
+          settings.v_min = voltage_scale.getLowValue();
+          settings.v_max = voltage_scale.getHighValue();
         }
         else if(c == time_scale) //TIME SCALE CHANGE
         {
@@ -123,8 +123,8 @@ private class Controls
                            .setBroadcast(false)
                            .setPosition(10, 10)
                            .setSize(500, 15)
-                           .setRange(0, 1024)
-                           .setRangeValues(0, 1024)
+                           .setRange(0, VOLTAGE_MAX)
+                           .setRangeValues(0, VOLTAGE_MAX)
                            .setHandleSize(15)
                            .setGroup(graph_scales)
                            .setBroadcast(true);

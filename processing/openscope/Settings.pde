@@ -3,8 +3,8 @@ private class Settings
     public int port = 0;
     public boolean[] pins = new boolean[NUM_PINS];
     
-    public int v_min = 0;
-    public int v_max = 255;
+    public float v_min = 0.0;
+    public float v_max = 5.0;
     public int t_min = 0;
     public int t_max = BUFFER_SIZE;
     

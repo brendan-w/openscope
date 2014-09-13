@@ -1,6 +1,5 @@
 public class Buffer
 {
-  private int sample_width;
   private int current;
   private Sample[] buffer;
   

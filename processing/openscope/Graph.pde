@@ -6,6 +6,10 @@ private class Graph
     //constants
     private final Point position = new Point(10, 10);
     private final Point size = new Point(900, 400);
+    private final int top = position.y;
+    private final int bottom = position.y + size.y;
+    private final int left = position.x;
+    private final int right = position.x + size.x;
 
     private PShape handle;
 
@@ -20,10 +24,38 @@ private class Graph
     public void frame(Settings s)
     {
         //draw the frame
-        fill(fillColor);
-        stroke(strokeColor);
+        fill(FILL_COLOR);
+        stroke(STROKE_COLOR);
         strokeWeight(1);
         rect(position.x, position.y, size.x, size.y);
+        
+        //determine what voltage scale to draw
+        float delta = s.v_max - s.v_min;
+        float interval = 1.0;
+        
+        if(delta > 3.0)       { interval = 1.0;  }
+        else if(delta > 1.5)  { interval = 0.5;  }
+        else if(delta > 0.75) { interval = 0.25; }
+        else                  { interval = 0.1;  }
+        
+        int start = (int) Math.ceil(s.v_min / interval);
+        int stop  = (int) Math.ceil(s.v_max / interval);
+        
+        //draw the voltage scale
+        fill(STROKE_COLOR);
+        for(int i = start; i < stop; i++)
+        {
+          float v = i * interval;
+          int y = (int) Util.map(v, s.v_min, s.v_max, bottom, top);
+          
+          line(left, y, right, y);
+          
+          //label
+          int yt = ((y - top) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
+          String t = Util.prettyFloat(v) + " V";
+          text(t, left + TEXT_PAD, yt);
+        }
+        
     }
 
     //draw the data
@@ -31,44 +63,6 @@ private class Graph
     {
         
     }
-    
-    public void drawData(Sample[] data, int c)
-    {
-        strokeWeight(2);
-        stroke(c);
-        //draw the data
-        Sample lastSample = null;
-        for(int i = 0; i < data.length - 1; i++)
-        {
-          Sample current = data[i];
-          
-          if(current != null)
-          {
-            if(lastSample != null)
-            {
-              drawSample(lastSample, current, i);
-            }
-            
-            lastSample = current;
-          }
-        }
-    }
-    
-    private void drawSample(Sample a, Sample b, int time_index)
-    {
-      /*
-      int xa = Util.map(time_index,     0, time, position.x, position.x + size.x);
-      int xb = Util.map(time_index + 1, 0, time, position.x, position.x + size.x);
-      int ya = Util.map(a.value,  min, max, position.y + size.y, position.y);
-      int yb = Util.map(b.value,  min, max, position.y + size.y, position.y);
-      
-      ya = Math.max(position.y, Math.min(position.y + size.y, ya));
-      yb = Math.max(position.y, Math.min(position.y + size.y, yb));
-      
-      line(xa, ya, xb, yb);
-      */
-    }
-
 
     private void drawHandle(int value, color c, String label)
     {
@@ -103,3 +97,4 @@ private class Graph
         handle.endShape(CLOSE);
     }
 }
+
