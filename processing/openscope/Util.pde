@@ -5,7 +5,7 @@
 public static class Util
 {
   
-  public String[] getPorts()
+  public static String[] getPorts()
   {
     return Serial.list();
   }

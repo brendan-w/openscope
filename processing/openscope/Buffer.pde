@@ -16,38 +16,20 @@ public class Buffer
     }
   }
   
-  public void addSample(int pin, int value, int time)
+  public void addSample(int pin, int value)
   {
     current = current % BUFFER_SIZE;
-    buffer[current].set(pin, value, time);
+    buffer[current].set(pin, value);
     current++;
   }
   
-  public Sample[] getBuffer()
+  public Frame toFrame()
   {
     Sample[] alignedBuffer =  new Sample[BUFFER_SIZE];
     for(int i = 0; i < BUFFER_SIZE; i++)
     {
       alignedBuffer[i] = buffer[(i + current) % BUFFER_SIZE]; 
     }
-    return alignedBuffer;
-  }
-  
-  
-  public Sample[] getPin(int p, int time)
-  {
-    Sample[] alignedBuffer = getBuffer();
-    Sample[] pinBuffer =  new Sample[time];
-
-
-    for(int i = 0; i < time; i++)
-    {
-      if(alignedBuffer[i].pin == p)
-      {
-        pinBuffer[i] = alignedBuffer[i];
-      }
-    }
-    
-    return pinBuffer;
+    return new Frame(alignedBuffer);
   }
 }

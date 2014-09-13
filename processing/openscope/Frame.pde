@@ -7,6 +7,11 @@ public class Frame implements Iterable<Sample>
     samples = source;
   }
   
+  public void compute(Settings s)
+  {
+    
+  }
+  
   public int size()
   {
     return samples.length;

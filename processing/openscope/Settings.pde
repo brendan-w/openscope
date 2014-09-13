@@ -1,15 +1,17 @@
-private static class Settings
+private class Settings
 {
-    private boolean[] pins;
-    private boolean trigger;
-    private int trigger_pin;
-    private float trigger_level;
+    public int port = 0;
+    public boolean[] pins = new boolean[NUM_PINS];
     
-    public Settings()
-    {
-      pins = new boolean[NUM_PINS];
-      trigger = false;
-      trigger_pin = 0;
-      trigger_level = 2.5;
-    }
+    public int v_min = 0;
+    public int v_max = 255;
+    public int t_min = 0;
+    public int t_max = BUFFER_SIZE;
+    
+    public boolean trigger = false;
+    public int trigger_pin = 0;
+    public float trigger_level = 128;
+
+    
+    public String portName() { return Util.getPorts()[port]; }
 }

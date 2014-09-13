@@ -1,48 +1,31 @@
 public class Connection
-{
-    //constants
-    private final int SERIAL_TIMEOUT = 1000;
-    private final int SERIAL_RATE = 38400;
-  
+{ 
     private Serial port;
-    private boolean waiting = true; //waiting for update response from Arduino
-    private int pin_watch = 0;
+    private Buffer buffer;
     
+    private int pin_watch = 0;
     private int lastPin;
     private int lastReading;
     
-    private Buffer buffer;
     
-    public Connection(PApplet root, int _portNum)
+    public Connection(PApplet root, Settings s)
     {
         buffer = new Buffer();
       
         try
         {
-            port = new Serial(root, Serial.list()[portNum], SERIAL_RATE);
+            port = new Serial(root, s.portName(), SERIAL_RATE);
             port.buffer(1); //1 byte buffer
         }
         catch(ArrayIndexOutOfBoundsException e)
         {
-            println ("Couldn't open serial port " + portNum);
+            println ("Couldn't open serial port " + s.portName());
         }
         
-        //ping until connected
-        int pings = 0;
-        waiting = true;
-        while((waiting == true) && (pings <= SERIAL_TIMEOUT))
-        {
-            pushSettings(pins);
-            pings++;
-        }
-        
-        if(pings < SERIAL_TIMEOUT)
-        {
-            println("Connected in " + pings + " pings");
-        }
+        pushSettings(s);
     }
     
-    public void frame()
+    public Frame frame()
     {
       if(port != null)
       {
@@ -55,6 +38,8 @@ public class Connection
           }
         }
       }
+      
+      return buffer.toFrame();
     }
     
     //method called every time a new byte is available
@@ -62,8 +47,6 @@ public class Connection
     {
         int value = (int) data;
 
-        if(!waiting)
-        {
           if(value != 255)
           {
             //decode value
@@ -76,7 +59,7 @@ public class Connection
               int voltage = lastReading << 5;
               voltage += reading;
               //add it to the buffer!
-              buffer.addSample(pin, voltage, root.millis());
+              buffer.addSample(pin, voltage);
             }
             
             lastPin = pin;
@@ -86,16 +69,6 @@ public class Connection
           {
             lastPin = -1;
           }
-        }
-        else
-        {
-            //update response was recieved, check validity
-            if(value == pin_watch)
-            {
-                println("Update Successful");
-                waiting = false;
-            }
-        }
     }
 
     public void disconnect()
@@ -107,15 +80,14 @@ public class Connection
         }
     }
 
-    public void pushSettings(boolean[] pins)
+    public void pushSettings(Settings s)
     {
       if(port != null)
       {
-        waiting = true;
         pin_watch = 0;
-        for(int i = 0; i < pins.length; i++)
+        for(int i = 0; i < s.pins.length; i++)
         {
-            if(pins[i])
+            if(s.pins[i])
             {
                 pin_watch = Util.bitSet(pin_watch, i);
             }

@@ -1,14 +1,12 @@
 private class Controls
 {
     private PApplet root;
-  
-    private Graph graph;
     private ControlP5 cp5;
+    private Settings settings;
     
     private Group connection_group;
     private DropdownList port_list;
     private Button connect_button;
-    
     
     private Group pin_group;
     private Toggle[] pin_toggle;
@@ -28,60 +26,56 @@ private class Controls
     public Controls(PApplet _root)
     {
         root = _root;
-        graph = new Graph();
         cp5 = new ControlP5(root);
+        settings = new Settings();
+        
         buildControllers();
     }
 
-    public void frame()
-    {
-        background(0);
-        
-        int min = (int) voltage_scale.getLowValue();
-        int max = (int) voltage_scale.getHighValue();
-        int time = (int) time_scale.getHighValue();
-        
-        if(min == 0) { min = 1; }
-        
-        graph.frame(min, max, time);
-        
-        for(int i = 0; i < NUM_PINS; i++)
-        {
-          if(pins[i])
-          {
-            graph.drawData(buffer.getPin(i, time), pinColors[i]);  
-          }
-        }
+    public Settings getSettings()
+    {   
+        return settings;
     }
     
-    //method called on every control event
-    public void controlEvent(ControlEvent e)
+    //method called on every controlEvent() in main
+    public void event(ControlEvent e)
     {
-      if(e.isController())
-      {
+        boolean updateRequired = false;
         Controller c = e.getController();
         
-        if(c == connect_button)
+        if(c == connect_button) //CONNECT
         {
-          //call the connect function
-          int selectedPort = int(port_list.getValue());
-          Connection.connect(selectedPort, pins);
+          settings.port = int(port_list.getValue());
+          connect();
         }
-        
-        for(int i = 0; i < pin_toggle.length; i++)
+        else if(c == voltage_scale) //VOLTAGE SCALE CHANGE
         {
-          if(c == pin_toggle[i])
+          settings.v_min = (int) voltage_scale.getLowValue();
+          settings.v_max = (int) voltage_scale.getHighValue();
+        }
+        else if(c == time_scale) //TIME SCALE CHANGE
+        {
+          settings.t_min = (int) time_scale.getLowValue();
+          settings.t_max = (int) time_scale.getHighValue();
+        }
+        else
+        {
+          //PIN TOGGLES
+          for(int i = 0; i < pin_toggle.length; i++)
           {
-            pins[i] = pin_toggle[i].getState();
-            Connection.pushSettings(pins);
+            if(c == pin_toggle[i])
+            {
+              settings.pins[i] = pin_toggle[i].getState();
+              updateRequired = true;
+            }
           }
         }
-      }
-    }
-    
-    public Settings getSettings()
-    {
-      return new Settings();
+        
+        //update the arduino is neccessary
+        if(updateRequired)
+        {
+          updateArduino();
+        }
     }
 
     private void buildControllers()
@@ -156,7 +150,7 @@ trig_slope = cp5.addRadioButton("Trigger Slope")
 .addItem("- Slope", 1);
 */
                         
-        String[] ports = Connection.getPorts();
+        String[] ports = Util.getPorts();
         
         port_list = cp5.addDropdownList("Port")
                        .setPosition(10, 70)
