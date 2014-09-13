@@ -1,20 +1,48 @@
-public static class Connection
+public class Connection
 {
     //constants
-    private static final int SERIAL_TIMEOUT = 1000;
-    private static final int SERIAL_RATE = 38400;
+    private final int SERIAL_TIMEOUT = 1000;
+    private final int SERIAL_RATE = 38400;
   
-    private static Serial port;
-    private static boolean waiting = true; //waiting for update response from Arduino
-    private static int pin_watch = 0;
+    private Serial port;
+    private boolean waiting = true; //waiting for update response from Arduino
+    private int pin_watch = 0;
     
-    private static PApplet root;
-    private static Buffer buffer;
-    private static int lastPin;
-    private static int lastReading;
+    private int lastPin;
+    private int lastReading;
     
+    private Buffer buffer;
     
-    public static void getData()
+    public Connection(PApplet root, int _portNum)
+    {
+        buffer = new Buffer();
+      
+        try
+        {
+            port = new Serial(root, Serial.list()[portNum], SERIAL_RATE);
+            port.buffer(1); //1 byte buffer
+        }
+        catch(ArrayIndexOutOfBoundsException e)
+        {
+            println ("Couldn't open serial port " + portNum);
+        }
+        
+        //ping until connected
+        int pings = 0;
+        waiting = true;
+        while((waiting == true) && (pings <= SERIAL_TIMEOUT))
+        {
+            pushSettings(pins);
+            pings++;
+        }
+        
+        if(pings < SERIAL_TIMEOUT)
+        {
+            println("Connected in " + pings + " pings");
+        }
+    }
+    
+    public void frame()
     {
       if(port != null)
       {
@@ -30,7 +58,7 @@ public static class Connection
     }
     
     //method called every time a new byte is available
-    public static void parseData(byte data)
+    public void parseData(byte data)
     {
         int value = (int) data;
 
@@ -70,36 +98,7 @@ public static class Connection
         }
     }
 
-    public static void connect(int portNum, boolean[] pins)
-    {
-        disconnect();
-
-        try
-        {
-            port = new Serial(root, Serial.list()[portNum], SERIAL_RATE);
-            port.buffer(1); //1 byte buffer
-        }
-        catch(ArrayIndexOutOfBoundsException e)
-        {
-            println ("Couldn't open serial port " + portNum);
-        }
-        
-        //ping until connected
-        int pings = 0;
-        waiting = true;
-        while((waiting == true) && (pings <= SERIAL_TIMEOUT))
-        {
-            pushSettings(pins);
-            pings++;
-        }
-        
-        if(pings < SERIAL_TIMEOUT)
-        {
-            println("Connected in " + pings + " pings");
-        }
-    }
-
-    public static void disconnect()
+    public void disconnect()
     {
         if(port != null)
         {
@@ -108,7 +107,7 @@ public static class Connection
         }
     }
 
-    public static void pushSettings(boolean[] pins)
+    public void pushSettings(boolean[] pins)
     {
       if(port != null)
       {
@@ -127,20 +126,5 @@ public static class Connection
       {
         println("No Com port has been defined");
       }
-    }
-
-    public static void setRoot(PApplet r)
-    {
-      root = r;
-    }
-    
-    public static void setBuffer(Buffer b)
-    {
-      buffer = b;
-    }
-
-    public static String[] getPorts()
-    {
-        return Serial.list();
     }
 }

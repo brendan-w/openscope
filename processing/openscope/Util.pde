@@ -5,6 +5,11 @@
 public static class Util
 {
   
+  public String[] getPorts()
+  {
+    return Serial.list();
+  }
+  
   public static int bitSet(int data, int bit)
   {
     return (1 << bit) | data;

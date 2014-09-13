@@ -1,4 +1,0 @@
-private static class Proc
-{
-    
-}

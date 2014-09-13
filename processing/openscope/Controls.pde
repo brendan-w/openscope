@@ -1,6 +1,6 @@
-private class Display
+private class Controls
 {
-    private PApplet main;
+    private PApplet root;
   
     private Graph graph;
     private ControlP5 cp5;
@@ -25,9 +25,9 @@ private class Display
     private RadioButton trig_slope;
     
     //constructor
-    public Display(PApplet root)
+    public Controls(PApplet _root)
     {
-        main = root;
+        root = _root;
         graph = new Graph();
         cp5 = new ControlP5(root);
         buildControllers();
@@ -77,6 +77,11 @@ private class Display
           }
         }
       }
+    }
+    
+    public Settings getSettings()
+    {
+      return new Settings();
     }
 
     private void buildControllers()

@@ -3,6 +3,7 @@
 */
 
 //imports-------------------------------
+import java.util.Iterator;
 import processing.serial.*;
 import java.awt.Point;
 import controlP5.*;
@@ -10,12 +11,6 @@ import controlP5.*;
 //constants
 private final int NUM_PINS = 6;
 private final int BUFFER_SIZE = 1000;
-
-//settings
-private boolean[] pins;
-private boolean trigger;
-private int trigger_pin;
-private float trigger_level;
 
 private int[] pinColors = {color(0,255,0),
                            color(255,255,0),
@@ -25,11 +20,12 @@ private int[] pinColors = {color(0,255,0),
                            color(255,255,255)};
 
 //main components
-public Buffer buffer;
-public Display display;
+public Connection connection;
+public Controls controls;
+public Graph graph;
 
 
-//methods-------------------------------
+
 public void setup()
 {
     size(920, 600, P2D);
@@ -39,25 +35,25 @@ public void setup()
     textSize(12);
     smooth();
     
-    pins = new boolean[NUM_PINS];
-    trigger = false;
-    trigger_pin = 0;
-    trigger_level = 2.5;
-    
-    buffer = new Buffer();
-    display = new Display(this);
-    Connection.setRoot(this);
-    Connection.setBuffer(buffer);
+    connection = null;
+    controls = new Controls(this);
+    graph = new Graph(this);
 }
 
 public void draw()
 {
-    Connection.getData();
-    display.frame();
+  if(connection != null)
+  {
+    Settings settings = Controls.getSettings();
+    Frame frame = connection.frame(settings);
+    frame.compute(settings);
+    graph.frame(frame);
+  }
 }
 
-//method called on every control event
+//forward the events to the control class
 public void controlEvent(ControlEvent e)
 {
-  display.controlEvent(e);
+  controls.controlEvent(e);
 }
+

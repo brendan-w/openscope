@@ -1,6 +1,8 @@
 
 private class Graph
 {
+    private PApplet root;
+  
     //constants
     private final Point position = new Point(10, 10);
     private final Point size = new Point(900, 400);
@@ -15,13 +17,18 @@ private class Graph
     private int time;
 
 
-    public Graph()
+    public Graph(PApplet _root)
     {
+        root = _root;
         buildShapes();
     }
 
-    public void frame(int _min, int _max, int _time)
+    public void frame(Frame f)
     {
+        int _min = 0;
+        int _max = 100;
+        int _time = 100;
+      
         //draw the frame
         fill(fill_color);
         stroke(border_color);
