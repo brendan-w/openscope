@@ -30,7 +30,7 @@ private class Graph
         rect(position.x, position.y, size.x, size.y);
         
         //draw the voltage scale
-        fill(STROKE_COLOR);
+        fill(255);
         for(int i = s.v_scale_start; i < s.v_scale_stop; i++)
         {
           float v = i * s.v_scale;
@@ -55,10 +55,11 @@ private class Graph
           Sample sample = f.get(i);
           float v = Util.readingToVoltage(sample.value);
           
-          int y = (int) Util.map(v, 0, VOLTAGE_MAX, bottom, top);
+          int y = (int) Util.map(v, s.v_min, s.v_max, bottom, top);
           int x = (int) Util.map(i, 0, f.size() - 1, left, right);
           
-          point(x, y);
+          if((y > top) && (y < bottom))
+            point(x, y);
         }
     }
 
