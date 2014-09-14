@@ -29,23 +29,11 @@ private class Graph
         strokeWeight(1);
         rect(position.x, position.y, size.x, size.y);
         
-        //determine what voltage scale to draw
-        float delta = s.v_max - s.v_min;
-        float interval = 1.0;
-        
-        if(delta > 3.0)       { interval = 1.0;  }
-        else if(delta > 1.5)  { interval = 0.5;  }
-        else if(delta > 0.75) { interval = 0.25; }
-        else                  { interval = 0.1;  }
-        
-        int start = (int) Math.ceil(s.v_min / interval);
-        int stop  = (int) Math.ceil(s.v_max / interval);
-        
         //draw the voltage scale
         fill(STROKE_COLOR);
-        for(int i = start; i < stop; i++)
+        for(int i = s.v_scale_start; i < s.v_scale_stop; i++)
         {
-          float v = i * interval;
+          float v = i * s.v_scale;
           int y = (int) Util.map(v, s.v_min, s.v_max, bottom, top);
           
           line(left, y, right, y);
@@ -55,7 +43,6 @@ private class Graph
           String t = Util.prettyFloat(v) + " V";
           text(t, left + TEXT_PAD, yt);
         }
-        
     }
 
     //draw the data

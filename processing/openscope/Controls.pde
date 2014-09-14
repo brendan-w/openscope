@@ -50,13 +50,13 @@ private class Controls
         }
         else if(c == voltage_scale) //VOLTAGE SCALE CHANGE
         {
-          settings.v_min = voltage_scale.getLowValue();
-          settings.v_max = voltage_scale.getHighValue();
+          settings.setV(voltage_scale.getLowValue(),
+                        voltage_scale.getHighValue());
         }
         else if(c == time_scale) //TIME SCALE CHANGE
         {
-          settings.t_min = (int) time_scale.getLowValue();
-          settings.t_max = (int) time_scale.getHighValue();
+          settings.setT((int) time_scale.getLowValue(),
+                        (int) time_scale.getHighValue());
         }
         else
         {
