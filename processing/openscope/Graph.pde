@@ -48,7 +48,18 @@ private class Graph
     //draw the data
     public void frame(Frame f, Settings s)
     {
-        
+        stroke(SIGNAL_COLORS[0]);
+        fill(SIGNAL_COLORS[0]);
+        for(int i = 0; i < f.size(); i++)
+        {
+          Sample sample = f.get(i);
+          float v = Util.readingToVoltage(sample.value);
+          
+          int y = (int) Util.map(v, 0, VOLTAGE_MAX, bottom, top);
+          int x = (int) Util.map(i, 0, f.size() - 1, left, right);
+          
+          point(x, y);
+        }
     }
 
     private void drawHandle(int value, color c, String label)

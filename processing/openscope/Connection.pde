@@ -27,15 +27,16 @@ public class Connection
     
     public Frame frame()
     {
-      lastTime = millis();
-      println("frame");
+      int time = millis();
+      int duration = time - lastTime;
+      int bytes = 0;
       
       if(port != null)
       {
         while(port.available() > 0)
         {
           byte[] serialBuffer = port.readBytes();
-          println(serialBuffer.length);
+          bytes += serialBuffer.length;
           for(int i = 0; i < serialBuffer.length; i++)
           {
             parseData(serialBuffer[i]);
@@ -43,6 +44,11 @@ public class Connection
         }
       }
       
+      //log the sample rate
+      float r = ((float)bytes / 3) / (float) duration;
+      buffer.sampleRate(r);
+      
+      lastTime = time;
       return buffer.toFrame();
     }
     

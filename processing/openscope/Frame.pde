@@ -1,10 +1,12 @@
 public class Frame implements Iterable<Sample>
 {
   private Sample[] samples;
+  private float rate;
   
-  public Frame(Sample[] source)
+  public Frame(Sample[] source, float r)
   {
     samples = source;
+    rate = r;
   }
   
   public void compute(Settings s)

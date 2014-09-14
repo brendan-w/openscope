@@ -15,6 +15,7 @@ private static final int READING_MAX = 1024;
 private static final int NUM_PINS = 6;
 private static final int BUFFER_SIZE = 1024;
 private static final int SERIAL_RATE = 38400;
+private static final int RATE_SMOOTH = 20; //calculated sample rates are smoothed of X frames
 
 
 private final int TEXT_SIZE = 12;
@@ -52,14 +53,8 @@ public void setup()
     graph = new Graph(this);
 }
 
-int lastTime = 0;
-
 public void draw()
 {
-  int t = millis();
-  println((t - lastTime));
-  lastTime = t;
-  
   background(0);
   
   //draw controls and graphs
