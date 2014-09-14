@@ -4,21 +4,16 @@
 
 public static class Util
 {
-  
   public static String[] getPorts()
   {
     return Serial.list();
   }
-  
-  
 
   public static String prettyFloat(float v) {
     DecimalFormat form = new DecimalFormat("#.##");
     return form.format(v);
   }
 
-
-  
   public static int bitSet(int data, int bit)
   {
     return (1 << bit) | data;
@@ -27,6 +22,19 @@ public static class Util
   public static int bitRead(int data, int bit)
   {
     return (data >> bit) & 1;
+  }
+  
+  public static int boolArrayToInt(boolean[] bits)
+  {
+    int value = 0;
+    for(int i = 0; i < bits.length; i++)
+    {
+        if(bits[i])
+        {
+            value = Util.bitSet(value, i);
+        }
+    }
+    return value;
   }
   
   public static float map(float x, float in_min, float in_max, float out_min, float out_max)
@@ -43,5 +51,5 @@ public static class Util
   {
     return (int) map(voltage, 0, VOLTAGE_MAX, 0, READING_MAX);
   }
-  
 }
+

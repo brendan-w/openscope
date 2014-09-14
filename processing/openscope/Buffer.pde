@@ -18,7 +18,7 @@ public class Buffer
   public void addSample(int pin, int value)
   {
     current = current % BUFFER_SIZE;
-    buffer[current].set(pin, value);
+    buffer[current].set(pin, value, 0.0);
     current++;
   }
   

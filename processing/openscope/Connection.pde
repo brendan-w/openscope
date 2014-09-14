@@ -3,9 +3,9 @@ public class Connection
     private Serial port;
     private Buffer buffer;
     
-    private int pin_watch = 0;
     private int lastPin;
     private int lastReading;
+    private int lastTime;
     
     
     public Connection(PApplet root, Settings s)
@@ -15,7 +15,7 @@ public class Connection
         try
         {
             port = new Serial(root, s.portName(), SERIAL_RATE);
-            port.buffer(1); //1 byte buffer
+            port.buffer(256); //1 byte buffer
         }
         catch(ArrayIndexOutOfBoundsException e)
         {
@@ -27,11 +27,15 @@ public class Connection
     
     public Frame frame()
     {
+      lastTime = millis();
+      println("frame");
+      
       if(port != null)
       {
         while(port.available() > 0)
         {
-          byte[] serialBuffer = port.readBytes(); 
+          byte[] serialBuffer = port.readBytes();
+          println(serialBuffer.length);
           for(int i = 0; i < serialBuffer.length; i++)
           {
             parseData(serialBuffer[i]);
@@ -55,7 +59,7 @@ public class Connection
             
             if(pin == lastPin)
             {
-              //we've recieved a sequence, put it together
+              //recieved a complete sequence, put it together
               int voltage = lastReading << 5;
               voltage += reading;
               //add it to the buffer!
@@ -84,15 +88,7 @@ public class Connection
     {
       if(port != null)
       {
-        pin_watch = 0;
-        for(int i = 0; i < s.pins.length; i++)
-        {
-            if(s.pins[i])
-            {
-                pin_watch = Util.bitSet(pin_watch, i);
-            }
-        }
-        port.write(pin_watch);
+        port.write(Util.boolArrayToInt(s.pins));
       }
       else
       {

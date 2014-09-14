@@ -52,9 +52,14 @@ public void setup()
     graph = new Graph(this);
 }
 
+int lastTime = 0;
 
 public void draw()
 {
+  int t = millis();
+  println((t - lastTime));
+  lastTime = t;
+  
   background(0);
   
   //draw controls and graphs
