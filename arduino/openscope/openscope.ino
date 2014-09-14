@@ -32,29 +32,31 @@ void loop()
 			sendPin(p);
 		}
 	}
-        Serial.write(255);
 }
 
 void sendPin(int p)
 {
-	//xxxxxxxx
-	//[p][val]
+	//0 0 p p p x x x
+        //1 x x x x x x x
+        
+        //0 1 0 t t t t t
+        //0 1 1 t t t t t
 
         int val = analogRead(p);
         val = analogRead(p);
-        int v1 = val;
-        int v2 = val;
-        v1 = v1 >> 5;
-        v1 &= (16+8+4+2+1);
-        v2 &= (16+8+4+2+1);
         
-        char part1 = (char) v1;
-        char part2 = (char) v2;
+        //make sure that the signal is only 10 bits
+        val &= 0b1111111111; //xxxxxxxxxx
+        
+        //mark the high bits with message part IDs
+        uint8_t part1 = 0;  //00000000
 
-	//add the pin number
-	p = p << 5;
-	part1 |= p;
-	part2 |= p;
+        //add the pin number
+        part1 |= p << 3;    //00ppp000
+        part1 |= val >> 7;  //00pppxxx
+        
+        uint8_t part2 = 1 << 7;      //10000000
+        part2 |= (val & 0b01111111); //1xxxxxxx
 
 	//send
 	Serial.write(part1);

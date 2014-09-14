@@ -45,7 +45,7 @@ public class Connection
       }
       
       //log the sample rate
-      float r = ((float)bytes / 3) / (float) duration;
+      float r = ((float)bytes / 2) / (float) duration;
       buffer.sampleRate(r);
       
       lastTime = time;
@@ -55,30 +55,19 @@ public class Connection
     //method called every time a new byte is available
     public void parseData(byte data)
     {
-        int value = (int) data;
-
-          if(value != 255)
-          {
-            //decode value
-            int pin = value >> 5;
-            int reading = value & (16+8+4+2+1);
-            
-            if(pin == lastPin)
-            {
-              //recieved a complete sequence, put it together
-              int voltage = lastReading << 5;
-              voltage += reading;
-              //add it to the buffer!
-              buffer.addSample(pin, voltage);
-            }
-            
-            lastPin = pin;
-            lastReading = reading;
-          }
-          else
-          {
-            lastPin = -1;
-          }
+        if((data >> 7) == 0)
+        {
+          //get the pin number
+          lastPin = (data >> 3) & (4+2+1);
+          //get the high bits of the reading
+          lastReading = (data & (4+2+1)) << 7;
+        }
+        else
+        {
+          //complet the reading
+          lastReading = lastReading | (data & (64+32+16+8+4+2+1));
+          buffer.addSample(lastPin, lastReading);
+        }
     }
 
     public void disconnect()

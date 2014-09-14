@@ -7,6 +7,7 @@ public class Frame implements Iterable<Sample>
   {
     samples = source;
     rate = r;
+    println(r);
   }
   
   public void compute(Settings s)
