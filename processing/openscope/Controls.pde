@@ -61,9 +61,13 @@ private class Controls
         {
           settings.trigger_voltage = trig_voltage.getValue();
         }
-        if(e.isFrom(trig_pin_toggle))
+        else if(e.isFrom(trig_pin_toggle))
         {
           settings.trigger_pin = (int) trig_pin_toggle.value();
+        }
+        else if(e.isFrom(trig_slope))
+        {
+          settings.trigger_slope = (int) trig_slope.value();
         }
         else
         {
@@ -122,6 +126,7 @@ private class Controls
         trig_pin_toggle = cp5.addRadioButton("Trigger Pin")
                                    .setPosition(10, 10)
                                    .setSize(20, 20)
+                                   .setNoneSelectedAllowed(true)
                                    .setSpacingColumn(10)
                                    .setGroup(trig_pin_group)
                                    .setItemsPerRow(NUM_PINS);
@@ -131,12 +136,18 @@ private class Controls
             pin_toggle[i] = cp5.addToggle("A" + i)
                                .setPosition(10 + (i * 30), 10)
                                .setSize(20, 20)
-                               .setGroup(pin_group);
+                               .setGroup(pin_group)
+                               .setState(settings.pins[i]);
             trig_pin_toggle.addItem("tA" + i, i);
             trig_pin_toggle.getItem(i).getCaptionLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE)
                                                         .setPaddingX(0)
                                                         .setPaddingY(5);
         }
+        
+        if(settings.trigger_pin == -1)
+          trig_pin_toggle.deactivateAll();
+        else
+          trig_pin_toggle.activate(settings.trigger_pin);
         
         
         //VOLTAGE AND TIME
@@ -145,7 +156,7 @@ private class Controls
                            .setPosition(10, 10)
                            .setSize(500, 15)
                            .setRange(0, VOLTAGE_MAX)
-                           .setRangeValues(0, VOLTAGE_MAX)
+                           .setRangeValues(settings.v_min, settings.v_max)
                            .setHandleSize(15)
                            .setGroup(graph_scales)
                            .setBroadcast(true);
@@ -154,8 +165,8 @@ private class Controls
                            .setBroadcast(false)
                            .setPosition(10, 35)
                            .setSize(500, 15)
-                           .setRange(0, 1000)
-                           .setRangeValues(0, 1000)
+                           .setRange(0, BUFFER_SIZE)
+                           .setRangeValues(settings.t_min, settings.t_max)
                            .setHandleSize(15)
                            .setGroup(graph_scales)
                            .setBroadcast(true);
@@ -166,6 +177,7 @@ private class Controls
                         .setPosition(10, 10)
                         .setSize(40, 20)
                         .setGroup(trig_set_group)
+                        .setNoneSelectedAllowed(false)
                         .setItemsPerRow(1)
                         .setSpacingColumn(50)
                         .addItem("+ Slope", 0)
@@ -177,7 +189,7 @@ private class Controls
                         .setPosition(120, 10)
                         .setGroup(trig_set_group)
                         .setRange(0, VOLTAGE_MAX)
-                        .setValue(VOLTAGE_MAX / 2);
+                        .setValue(settings.trigger_voltage);
 
                         
         String[] ports = Util.getPorts();

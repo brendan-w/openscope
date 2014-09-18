@@ -5,8 +5,8 @@ private class Settings
     
     //voltage
     public float v_min = 0.0;
-    public float v_max = 5.0;
-    public float v_delta = 5.0;
+    public float v_max = VOLTAGE_MAX;
+    public float v_delta = VOLTAGE_MAX;
     public float v_scale = 1.0;
     public int v_scale_start = 0;
     public int v_scale_stop  = 5;
@@ -18,9 +18,21 @@ private class Settings
     
     public boolean trigger = false;
     public int trigger_pin = -1;
+    public int trigger_slope = 0;
     public float trigger_voltage = VOLTAGE_MAX / 2;
 
 
+    public int mode()
+    {
+      int count = 0;
+      for(int i = 0; i < NUM_PINS; i++)
+      {
+        if(pins[i]) { count++; }
+        if(count > 1) { break; }
+      }
+      
+      return (count > 1) ? 1 : 0;
+    }
     public String portName() { return Util.getPorts()[port]; }
 
     public void setV(float min, float max)

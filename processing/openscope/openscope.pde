@@ -16,6 +16,10 @@ private static final float VOLTAGE_MAX = 5.0;
 private static final int READING_MAX = 1024;
 private static final int NUM_PINS = 6;
 
+//should be an enum, but processing doesn't "support" enums yet... too late in the game to switch environments. TODO
+private static final int MODE_SINGLE = 0;
+private static final int MODE_MULTI = 1;
+
 
 private final int TEXT_SIZE = 12;
 private final int TEXT_PAD = 5;
