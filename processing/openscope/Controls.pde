@@ -16,11 +16,11 @@ private class Controls
     private Range time_scale;
     
     private Group trig_pin_group;
-    private Toggle[] trig_pin_toggle;
+    private RadioButton trig_pin_toggle;
     
     private Group trig_set_group;
-    private Toggle trigger;
     private RadioButton trig_slope;
+    private Slider trig_voltage;
     
     //constructor
     public Controls(PApplet _root)
@@ -41,34 +41,42 @@ private class Controls
     public void event(ControlEvent e)
     {
         boolean updateRequired = false;
-        Controller c = e.getController();
         
-        if(c == connect_button) //CONNECT
+        if(e.isFrom(connect_button)) //CONNECT
         {
           settings.port = int(port_list.getValue());
           connect();
         }
-        else if(c == voltage_scale) //VOLTAGE SCALE CHANGE
+        else if(e.isFrom(voltage_scale)) //VOLTAGE SCALE CHANGE
         {
           settings.setV(voltage_scale.getLowValue(),
                         voltage_scale.getHighValue());
         }
-        else if(c == time_scale) //TIME SCALE CHANGE
+        else if(e.isFrom(time_scale)) //TIME SCALE CHANGE
         {
           settings.setT((int) time_scale.getLowValue(),
                         (int) time_scale.getHighValue());
+        }
+        else if(e.isFrom(trig_voltage))
+        {
+          settings.trigger_voltage = trig_voltage.getValue();
+        }
+        if(e.isFrom(trig_pin_toggle))
+        {
+          settings.trigger_pin = (int) trig_pin_toggle.value();
         }
         else
         {
           //PIN TOGGLES
           for(int i = 0; i < pin_toggle.length; i++)
           {
-            if(c == pin_toggle[i])
+            if(e.isFrom(pin_toggle[i]))
             {
               settings.pins[i] = pin_toggle[i].getState();
               updateRequired = true;
             }
           }
+          
         }
         
         //update the arduino is neccessary
@@ -77,9 +85,12 @@ private class Controls
           updateArduino();
         }
     }
-
+      
+      
     private void buildControllers()
     {
+        //GROUPS
+      
         connection_group = cp5.addGroup("Connection")
                               .setPosition(10, 440)
                               .setSize(120, 140)
@@ -95,7 +106,7 @@ private class Controls
                             .setSize(560, 60)
                             .setBackgroundColor(30);
                        
-        trig_pin_group = cp5.addGroup("Trigger Pin")
+        trig_pin_group = cp5.addGroup("Trigger")
                             .setPosition(150, 520)
                             .setSize(190, 60)
                             .setBackgroundColor(30);
@@ -105,20 +116,30 @@ private class Controls
                             .setSize(560, 60)
                             .setBackgroundColor(30);
                        
+        //PIN TOGGLES
         pin_toggle = new Toggle[NUM_PINS];
-        trig_pin_toggle = new Toggle[NUM_PINS];
+        
+        trig_pin_toggle = cp5.addRadioButton("Trigger Pin")
+                                   .setPosition(10, 10)
+                                   .setSize(20, 20)
+                                   .setSpacingColumn(10)
+                                   .setGroup(trig_pin_group)
+                                   .setItemsPerRow(NUM_PINS);
+        
         for(int i = 0; i < NUM_PINS; i++)
         {
             pin_toggle[i] = cp5.addToggle("A" + i)
                                .setPosition(10 + (i * 30), 10)
                                .setSize(20, 20)
                                .setGroup(pin_group);
-            trig_pin_toggle[i] = cp5.addToggle("A" + i + " ")
-                                   .setPosition(10 + (i * 30), 10)
-                                   .setSize(20, 20)
-                                   .setGroup(trig_pin_group);
+            trig_pin_toggle.addItem("tA" + i, i);
+            trig_pin_toggle.getItem(i).getCaptionLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE)
+                                                        .setPaddingX(0)
+                                                        .setPaddingY(5);
         }
         
+        
+        //VOLTAGE AND TIME
         voltage_scale = cp5.addRange("Voltage")
                            .setBroadcast(false)
                            .setPosition(10, 10)
@@ -139,16 +160,25 @@ private class Controls
                            .setGroup(graph_scales)
                            .setBroadcast(true);
         
-        /*
-trig_slope = cp5.addRadioButton("Trigger Slope")
-.setPosition(10, 10)
-.setSize(40, 20)
-.setGroup(trig_set_group)
-.setItemsPerRow(1)
-.setSpacingColumn(50)
-.addItem("+ Slope", 0)
-.addItem("- Slope", 1);
-*/
+        
+        //TRIGGER
+        trig_slope = cp5.addRadioButton("Trigger Slope")
+                        .setPosition(10, 10)
+                        .setSize(40, 20)
+                        .setGroup(trig_set_group)
+                        .setItemsPerRow(1)
+                        .setSpacingColumn(50)
+                        .addItem("+ Slope", 0)
+                        .addItem("- Slope", 1)
+                        .activate(0);
+                        
+        trig_voltage = cp5.addSlider("Trigger Voltage")
+                        .setSize(350, 15)
+                        .setPosition(120, 10)
+                        .setGroup(trig_set_group)
+                        .setRange(0, VOLTAGE_MAX)
+                        .setValue(VOLTAGE_MAX / 2);
+
                         
         String[] ports = Util.getPorts();
         

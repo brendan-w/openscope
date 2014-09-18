@@ -17,8 +17,8 @@ private class Settings
     public int t_delta = BUFFER_SIZE;
     
     public boolean trigger = false;
-    public int trigger_pin = 0;
-    public float trigger_level = 128;
+    public int trigger_pin = -1;
+    public float trigger_voltage = VOLTAGE_MAX / 2;
 
 
     public String portName() { return Util.getPorts()[port]; }

@@ -43,6 +43,24 @@ private class Graph
           String t = Util.prettyFloat(v) + " V";
           text(t, left + TEXT_PAD, yt);
         }
+        
+        //draw the trigger line
+        if(s.trigger_pin != -1)
+        {
+          fill(TRIGGER_COLOR);
+          stroke(TRIGGER_COLOR);
+          strokeWeight(SIGNAL_WEIGHT);
+          int y = (int) Util.map(s.trigger_voltage, s.v_min, s.v_max, bottom, top);
+          if((y > top) && (y < bottom))
+          {
+            line(left, y, right, y);
+          
+            //label
+            int yt = ((y - top) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
+            String t = Util.prettyFloat(s.trigger_voltage) + " V";
+            text(t, left + TEXT_PAD, yt);
+          }
+        }
     }
 
     //draw the data

@@ -6,10 +6,10 @@
 	#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-#define SIGNAL_BUFFER_SIZE 512
+#define BUFFER_SIZE 900
 
 
-int signalBuffer[SIGNAL_BUFFER_SIZE];
+int buffer[BUFFER_SIZE];
 int current = 0;
 
 int pin = 0;
@@ -25,35 +25,34 @@ void setup()
 	cbi(ADCSRA,ADPS1);
 	cbi(ADCSRA,ADPS0);
 
-  for(int k = 0; k < SIGNAL_BUFFER_SIZE; k++)
+  for(int i = 0; i < BUFFER_SIZE; i++)
   {
-    signalBuffer[k] = 0;
+    buffer[i] = 0;
   }
 
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
 
-	Serial.begin(38400);
+	Serial.begin(115200);
 }
 
 void loop()
 {
-  current = current % SIGNAL_BUFFER_SIZE;
+  current = current % BUFFER_SIZE;
   if(current == 0) { sendBuffer(); }
-  signalBuffer[current] = analogRead(pin);
+  buffer[current] = analogRead(pin);
   current++;
-  delay(1);
+  delayMicroseconds(500);
 }
 
 void sendBuffer()
 {
   digitalWrite(13, HIGH);
-  for(int i = 0; i < SIGNAL_BUFFER_SIZE; i++)
+  for(int i = 0; i < BUFFER_SIZE; i++)
   {
-    sendPin(pin, signalBuffer[i]);
+    sendPin(pin, buffer[i]);
   }
   digitalWrite(13, LOW);
-  delay(500);
 }
 
 void sendPin(int p, int val)

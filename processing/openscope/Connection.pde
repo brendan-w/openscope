@@ -5,7 +5,6 @@ public class Connection
     
     private int lastPin;
     private int lastReading;
-    private int lastTime;
     
     
     public Connection(PApplet root, Settings s)
@@ -27,28 +26,17 @@ public class Connection
     
     public Frame frame()
     {
-      int time = millis();
-      int duration = time - lastTime;
-      int bytes = 0;
-      
       if(port != null)
       {
         while(port.available() > 0)
         {
           byte[] serialBuffer = port.readBytes();
-          bytes += serialBuffer.length;
           for(int i = 0; i < serialBuffer.length; i++)
           {
             parseData(serialBuffer[i]);
           }
         }
       }
-      
-      //log the sample rate
-      float r = ((float)bytes / 2) / (float) duration;
-      buffer.sampleRate(r);
-      
-      lastTime = time;
       return buffer.toFrame();
     }
     
