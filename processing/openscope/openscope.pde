@@ -54,7 +54,7 @@ public void setup()
     
     connection = null;
     controls = new Controls(this);
-    graph = new Graph(this);
+    graph = new Graph();
 }
 
 public void draw()
