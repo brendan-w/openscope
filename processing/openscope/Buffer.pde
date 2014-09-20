@@ -2,6 +2,7 @@ public class Buffer
 {
   private Sample[] buffer;
   private int current;
+  private Frame frame;
   
   public Buffer()
   {
@@ -11,6 +12,7 @@ public class Buffer
     {
       buffer[i] = new Sample();
     }
+    toFrame();
   }
   
   public void addSample(int pin, int value)
@@ -20,14 +22,18 @@ public class Buffer
     current++;
   }
   
-  public Frame toFrame()
+  public void toFrame()
   {
     Sample[] alignedBuffer =  new Sample[BUFFER_SIZE];
     for(int i = 0; i < BUFFER_SIZE; i++)
     {
-      alignedBuffer[i] = buffer[(i + current) % BUFFER_SIZE]; 
+      alignedBuffer[i] = buffer[(i + current) % BUFFER_SIZE].clone(); 
     }
-    
-    return new Frame(alignedBuffer);
+    frame = new Frame(alignedBuffer);
+  }
+  
+  public Frame getFrame()
+  {
+    return frame;
   }
 }

@@ -8,6 +8,18 @@
 
 #define BUFFER_SIZE 900
 
+//readings are 10 bits, so pack them to conserve memory 
+struct Values
+{
+  uint16_t a:10;
+  uint16_t b:10;
+  uint16_t c:10;
+  uint16_t d:10;
+  uint16_t e:10;
+  uint16_t f:10;
+  uint16_t g:10;
+  uint16_t h:10;
+};
 
 int buffer[BUFFER_SIZE];
 int current = 0;
@@ -42,7 +54,7 @@ void loop()
   if(current == 0) { sendBuffer(); }
   buffer[current] = analogRead(pin);
   current++;
-  delayMicroseconds(500);
+  delayMicroseconds(250);
 }
 
 void sendBuffer()
@@ -52,6 +64,7 @@ void sendBuffer()
   {
     sendPin(pin, buffer[i]);
   }
+  Serial.write(0b01000000); //buffer finish status
   digitalWrite(13, LOW);
 }
 
@@ -60,8 +73,8 @@ void sendPin(int p, int val)
 	//0 0 p p p x x x
         //1 x x x x x x x
         
-        //0 1 0 t t t t t
-        //0 1 1 t t t t t
+        //buffer finish
+        //0 1 0 0 0 0 0 0
         
         //make sure that the signal is only 10 bits
         val &= 0b1111111111; //xxxxxxxxxx

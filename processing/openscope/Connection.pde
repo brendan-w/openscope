@@ -14,7 +14,7 @@ public class Connection
         try
         {
             port = new Serial(root, s.portName(), SERIAL_RATE);
-            port.buffer(256); //1 byte buffer
+            port.buffer(256);
         }
         catch(ArrayIndexOutOfBoundsException e)
         {
@@ -37,7 +37,7 @@ public class Connection
           }
         }
       }
-      return buffer.toFrame();
+      return buffer.getFrame();
     }
     
     //method called every time a new byte is available
@@ -45,10 +45,18 @@ public class Connection
     {
         if((data >> 7) == 0)
         {
-          //get the pin number
-          lastPin = (data >> 3) & (4+2+1);
-          //get the high bits of the reading
-          lastReading = (data & (4+2+1)) << 7;
+          if(data == 64)
+          {
+            //buffer finish code
+            buffer.toFrame();
+          }
+          else
+          {
+            //get the pin number
+            lastPin = (data >> 3) & (4+2+1);
+            //get the high bits of the reading
+            lastReading = (data & (4+2+1)) << 7;
+          }
         }
         else
         {
