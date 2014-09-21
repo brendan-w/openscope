@@ -80,7 +80,9 @@ public class Connection
     {
       if(port != null)
       {
-        port.write(Util.boolArrayToInt(s.pins));
+        int pinWatch = Util.boolArrayToInt(s.pins);
+        int modeAndTrigPin = 1 << 6;
+        port.write(pinWatch);
       }
       else
       {

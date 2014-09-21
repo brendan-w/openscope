@@ -21,13 +21,14 @@ struct Values
   uint16_t h:10;
 };
 
-int buffer[BUFFER_SIZE];
-int current = 0;
+uint16_t buffer[BUFFER_SIZE];
+uint16_t current = 0;
 
-int pin = 0;
+uint8_t mode = 0;
+uint8_t pinWatch = 1;
+uint8_t triggerPin = 0;
+uint16_t triggerValue = 0;
 
-//which analog pins are being watched
-char pinWatch = 0;
 
 
 void setup()
@@ -52,7 +53,7 @@ void loop()
 {
   current = current % BUFFER_SIZE;
   if(current == 0) { sendBuffer(); }
-  buffer[current] = analogRead(pin);
+  buffer[current] = analogRead(0);
   current++;
   delayMicroseconds(250);
 }
@@ -62,7 +63,7 @@ void sendBuffer()
   digitalWrite(13, HIGH);
   for(int i = 0; i < BUFFER_SIZE; i++)
   {
-    sendPin(pin, buffer[i]);
+    sendPin(0, buffer[i]);
   }
   Serial.write(0b01000000); //buffer finish status
   digitalWrite(13, LOW);
@@ -70,11 +71,11 @@ void sendBuffer()
 
 void sendPin(int p, int val)
 {
-  //0 0 p p p x x x
-  //1 x x x x x x x
+  //00pppxxx
+  //1xxxxxxx
         
   //buffer finish
-  //0 1 0 0 0 0 0 0
+  //01000000
         
   //make sure that the signal is only 10 bits
   val &= 0b1111111111; //xxxxxxxxxx
@@ -97,6 +98,48 @@ void sendPin(int p, int val)
 //called when a byte arrives from the computer
 void serialEvent()
 {
-  pinWatch = (uint8_t) Serial.read();
+  /*
+    p = pins to read
+    m = scope mode
+    t = trigger pin
+    v = trigger value
+    d = inter-sample delay
+  */
+  
+  //00pppppp
+  //01mmmttt
+  //100vvvvv
+  //101vvvvv
+  //110ddddd
+  //111ddddd
+  
+  uint8_t v = (uint8_t) Serial.read();
+  
+  //read the header
+  switch(v >> 6)
+  {
+    case 0b00: //pins to read
+      pinWatch = v;
+      break;
+      
+    case 0b01: //scope mode & trigger pin
+      mode = (v & 0b00111000) >> 3;
+      triggerPin = (v & 0b00000111);
+      break;
+      
+    case 0b10: //trigger value
+      if(bitRead(v, 5) == 0)
+      {
+        //low bits have been sent
+        
+      }
+      else
+      {
+        //high bits have been sent
+      }
+      break;
+    case 0b11: //inter-sample delay
+      break;
+  }
   Serial.write(pinWatch);
 }

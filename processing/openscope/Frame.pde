@@ -27,6 +27,9 @@ public class Frame implements Iterable<Sample>
       return new FrameIterator();
   }
   
+  /*
+    Iterator seems more complex than usual
+  */
   private class FrameIterator implements Iterator<Sample>
   {
         private int index = 0;
