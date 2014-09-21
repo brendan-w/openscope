@@ -145,7 +145,6 @@ void serialEvent()
       }
       break;
     case 0b11: //sample delay
-      break;
       if(bitRead(v, 5) == 0)
       {
         //low bits have been sent
@@ -157,6 +156,7 @@ void serialEvent()
         //high bits have been sent
         sampleDelay |= ((v & 0b00011111) << 5);
       }
+      break;
   }
   Serial.write(pinWatch);
 }
