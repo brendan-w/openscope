@@ -69,7 +69,7 @@ public void draw()
   if(connection != null)
   {
     Frame frame = connection.frame();
-    frame.compute(settings);
+    //frame.compute(settings);
     graph.frame(frame, settings);
   }
 }

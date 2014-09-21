@@ -47,7 +47,8 @@ public class Connection
         {
           if(data == 64)
           {
-            //buffer finish code
+            //buffer has finished transmitting
+            //stash the current state of the buffer
             buffer.toFrame();
           }
           else

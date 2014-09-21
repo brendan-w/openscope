@@ -22,6 +22,7 @@ public class Buffer
     current++;
   }
   
+  //call this to stash the current state of the buffer as a frame
   public void toFrame()
   {
     Sample[] alignedBuffer =  new Sample[BUFFER_SIZE];

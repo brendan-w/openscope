@@ -30,6 +30,12 @@ public class Frame implements Iterable<Sample>
   private class FrameIterator implements Iterator<Sample>
   {
         private int index = 0;
+        private Sample[] previous; //the previous samples, where index = pin number
+        
+        public FrameIterator()
+        {
+          previous = new Sample[NUM_PINS];
+        }
 
         public boolean hasNext()
         {
