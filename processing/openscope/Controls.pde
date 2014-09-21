@@ -55,6 +55,7 @@ private class Controls
         else if(e.isFrom(time_scale)) //TIME SCALE CHANGE
         {
           settings.sample_delay = (int) time_scale.getValue();
+          updateRequired = true;
         }
         else if(e.isFrom(trig_voltage))
         {

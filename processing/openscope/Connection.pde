@@ -91,7 +91,6 @@ public class Connection
         trigValueP2 = trigValueP2 | (trigValue >> 5);           // 101vvvvv
         
         int delay = s.sample_delay;
-        println(delay);
         int delayP1 = (1 << 7) | (1 << 6);            // 11000000
         int delayP2 = (1 << 7) | (1 << 6) | (1 << 5); // 11100000
         delayP1 = delayP1 | (delay & (16+8+4+2+1));   // 110vvvvv
