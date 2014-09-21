@@ -13,7 +13,7 @@ private class Controls
     
     private Group graph_scales;
     private Range voltage_scale;
-    private Range time_scale;
+    private Slider time_scale;
     
     private Group trig_pin_group;
     private RadioButton trig_pin_toggle;
@@ -54,20 +54,22 @@ private class Controls
         }
         else if(e.isFrom(time_scale)) //TIME SCALE CHANGE
         {
-          settings.setT((int) time_scale.getLowValue(),
-                        (int) time_scale.getHighValue());
+          settings.sample_delay = (int) time_scale.getValue();
         }
         else if(e.isFrom(trig_voltage))
         {
           settings.trigger_voltage = trig_voltage.getValue();
+          updateRequired = true;
         }
         else if(e.isFrom(trig_pin_toggle))
         {
           settings.trigger_pin = (int) trig_pin_toggle.value();
+          updateRequired = true;
         }
         else if(e.isFrom(trig_slope))
         {
           settings.trigger_slope = (int) trig_slope.value();
+          updateRequired = true;
         }
         else
         {
@@ -161,12 +163,12 @@ private class Controls
                            .setGroup(graph_scales)
                            .setBroadcast(true);
                            
-        time_scale = cp5.addRange("Time")
+        time_scale = cp5.addSlider("Time")
                            .setBroadcast(false)
                            .setPosition(10, 35)
                            .setSize(500, 15)
-                           .setRange(0, BUFFER_SIZE)
-                           .setRangeValues(settings.t_min, settings.t_max)
+                           .setRange(0, 1023)
+                           .setValue(settings.sample_delay)
                            .setHandleSize(15)
                            .setGroup(graph_scales)
                            .setBroadcast(true);

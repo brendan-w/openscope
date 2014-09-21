@@ -60,6 +60,7 @@ private class Graph
     //draw the data
     public void frame(Frame f, Settings s)
     {
+        strokeWeight(1);
         stroke(SIGNAL_COLORS[0]);
         fill(SIGNAL_COLORS[0]);
         for(int i = 0; i < f.size(); i++)

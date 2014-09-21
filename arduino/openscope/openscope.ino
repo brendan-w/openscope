@@ -26,8 +26,10 @@ uint16_t current = 0;
 
 uint8_t mode = 0;
 uint8_t pinWatch = 1;
+uint8_t triggerSlope = 0;
 uint8_t triggerPin = 0;
 uint16_t triggerValue = 0;
+uint16_t sampleDelay = 250;
 
 
 
@@ -55,7 +57,7 @@ void loop()
   if(current == 0) { sendBuffer(); }
   buffer[current] = analogRead(0);
   current++;
-  delayMicroseconds(250);
+  delayMicroseconds(sampleDelay);
 }
 
 void sendBuffer()
@@ -71,24 +73,24 @@ void sendBuffer()
 
 void sendPin(int p, int val)
 {
-  //00pppxxx
-  //1xxxxxxx
+  // 00pppxxx
+  // 1xxxxxxx
         
   //buffer finish
-  //01000000
+  // 01000000
         
   //make sure that the signal is only 10 bits
-  val &= 0b1111111111; //xxxxxxxxxx
+  val &= 0b1111111111; // xxxxxxxxxx
         
   //mark the high bits with message part IDs
-  uint8_t part1 = 0;  //00000000
+  uint8_t part1 = 0;  // 00000000
 
   //add the pin number
-  part1 |= p << 3;    //00ppp000
-  part1 |= val >> 7;  //00pppxxx
+  part1 |= p << 3;    // 00ppp000
+  part1 |= val >> 7;  // 00pppxxx
         
-  uint8_t part2 = 1 << 7;      //10000000
-  part2 |= (val & 0b01111111); //1xxxxxxx
+  uint8_t part2 = 1 << 7;      // 10000000
+  part2 |= (val & 0b01111111); // 1xxxxxxx
 
   //send
   Serial.write(part1);
@@ -101,17 +103,18 @@ void serialEvent()
   /*
     p = pins to read
     m = scope mode
+    s = trigger slope
     t = trigger pin
     v = trigger value
     d = inter-sample delay
   */
   
-  //00pppppp
-  //01mmmttt
-  //100vvvvv
-  //101vvvvv
-  //110ddddd
-  //111ddddd
+  // 00pppppp
+  // 01mmsttt
+  // 100vvvvv
+  // 101vvvvv
+  // 110ddddd
+  // 111ddddd
   
   uint8_t v = (uint8_t) Serial.read();
   
@@ -123,7 +126,8 @@ void serialEvent()
       break;
       
     case 0b01: //scope mode & trigger pin
-      mode = (v & 0b00111000) >> 3;
+      mode = (v & 0b00110000) >> 4;
+      triggerSlope = bitRead(v, 3);
       triggerPin = (v & 0b00000111);
       break;
       
@@ -131,15 +135,28 @@ void serialEvent()
       if(bitRead(v, 5) == 0)
       {
         //low bits have been sent
-        
+        triggerValue = 0;
+        triggerValue |= (v & 0b00011111);
       }
       else
       {
         //high bits have been sent
+        triggerValue |= ((v & 0b00011111) << 5);
       }
       break;
-    case 0b11: //inter-sample delay
+    case 0b11: //sample delay
       break;
+      if(bitRead(v, 5) == 0)
+      {
+        //low bits have been sent
+        sampleDelay = 0;
+        sampleDelay |= (v & 0b00011111);
+      }
+      else
+      {
+        //high bits have been sent
+        sampleDelay |= ((v & 0b00011111) << 5);
+      }
   }
   Serial.write(pinWatch);
 }
