@@ -21,9 +21,6 @@ private class Settings
     public float trigger_voltage = VOLTAGE_MAX / 2;
 
 
-
-    public String portName() { return Util.getPorts()[port]; }
-
     public void setV(float min, float max)
     {
       v_min = min;

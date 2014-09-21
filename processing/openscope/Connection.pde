@@ -6,19 +6,25 @@ public class Connection
     private int lastPin;
     private int lastReading;
     
+    private int status;
+    
     
     public Connection(PApplet root, Settings s)
     {
         buffer = new Buffer();
+        status = STATUS_NULL;
       
         try
         {
-            port = new Serial(root, s.portName(), SERIAL_RATE);
+            String portName = Util.getPorts()[s.port];
+            port = new Serial(root, portName, SERIAL_RATE);
             port.buffer(256);
+            status = STATUS_IDLE;
         }
         catch(ArrayIndexOutOfBoundsException e)
         {
-            println ("Couldn't open serial port " + s.portName());
+            status = STATUS_FAIL;
+            println ("Failed to open serial port");
         }
         
         pushSettings(s);
@@ -28,8 +34,10 @@ public class Connection
     {
       if(port != null)
       {
+        status = STATUS_IDLE;
         while(port.available() > 0)
         {
+          status = STATUS_DATA;
           byte[] serialBuffer = port.readBytes();
           for(int i = 0; i < serialBuffer.length; i++)
           {
@@ -72,7 +80,6 @@ public class Connection
         if(port != null)
         {
             port.stop();
-            println("Disconnected");
         }
     }
 
@@ -105,7 +112,12 @@ public class Connection
       }
       else
       {
-        println("No Com port has been defined");
+        println("Failed to push settings: Not connected to serial");
       }
+    }
+    
+    public int getStatus()
+    {
+      return status;
     }
 }

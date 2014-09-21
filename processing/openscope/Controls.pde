@@ -98,30 +98,25 @@ private class Controls
     {
         //GROUPS
       
-        connection_group = cp5.addGroup("Connection")
-                              .setPosition(10, 440)
-                              .setSize(120, 140)
-                              .setBackgroundColor(30);
-      
         pin_group = cp5.addGroup("Pins")
                        .setPosition(150, 440)
                        .setSize(190, 60)
-                       .setBackgroundColor(30);
+                       .setBackgroundColor(FILL_COLOR);
                        
         graph_scales = cp5.addGroup("Scales")
                             .setPosition(350, 440)
                             .setSize(560, 60)
-                            .setBackgroundColor(30);
+                            .setBackgroundColor(FILL_COLOR);
                        
         trig_pin_group = cp5.addGroup("Trigger")
                             .setPosition(150, 520)
                             .setSize(190, 60)
-                            .setBackgroundColor(30);
+                            .setBackgroundColor(FILL_COLOR);
                             
         trig_set_group = cp5.addGroup("Trigger Settings")
                             .setPosition(350, 520)
                             .setSize(560, 60)
-                            .setBackgroundColor(30);
+                            .setBackgroundColor(FILL_COLOR);
                        
         //PIN TOGGLES
         pin_toggle = new Toggle[NUM_PINS];
@@ -192,16 +187,18 @@ private class Controls
                         .setPosition(120, 10)
                         .setGroup(trig_set_group)
                         .setRange(0, VOLTAGE_MAX)
-                        .setValue(settings.trigger_voltage);
-
+                        .setValue(settings.trigger_voltage);  
                         
+        connect_button = cp5.addButton("Connect")
+                            .setPosition(10, 430)
+                            .setSize(120, 30);
+        
         String[] ports = Util.getPorts();
         
         port_list = cp5.addDropdownList("Port")
-                       .setPosition(10, 70)
+                       .setPosition(10, 490)
                        .setItemHeight(15)
-                       .setBarHeight(15)
-                       .setGroup(connection_group);
+                       .setBarHeight(15);
                        
         port_list.captionLabel().style().marginTop = 3;
                        
@@ -209,11 +206,5 @@ private class Controls
         {
           port_list.addItem(ports[i], i);
         }
-        
-        connect_button = cp5.addButton("Connect")
-                            .setPosition(10, 10)
-                            .setSize(100, 30)
-                            .setGroup(connection_group);
-         
-     }
+    }
 }

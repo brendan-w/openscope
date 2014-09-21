@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import processing.serial.*;
 import controlP5.*;
 
+
 //constants
 private static final int BUFFER_SIZE = 900;
 private static final int SERIAL_RATE = 115200;
@@ -17,8 +18,10 @@ private static final int READING_MAX = 1024;
 private static final int NUM_PINS = 6;
 
 //should be an enum, but processing doesn't "support" enums yet... too late in the game to switch environments. TODO
-private static final int MODE_SINGLE = 0;
-private static final int MODE_MULTI = 1;
+private final int STATUS_FAIL = -1;
+private final int STATUS_NULL = 0;
+private final int STATUS_IDLE = 1;
+private final int STATUS_DATA = 2;
 
 
 private final int TEXT_SIZE = 12;
@@ -37,10 +40,12 @@ private final int[] SIGNAL_COLORS = {
   color(255, 255, 255)
 };
 
+
 //main components
 public Connection connection;
 public Controls controls;
 public Graph graph;
+public IOLight io;
 
 
 public void setup()
@@ -55,6 +60,7 @@ public void setup()
     connection = null;
     controls = new Controls(this);
     graph = new Graph();
+    io = new IOLight();
 }
 
 public void draw()
@@ -63,15 +69,22 @@ public void draw()
   
   //draw controls and graphs
   Settings settings = controls.getSettings();
+  
+  //draw the background of the graph regardless of connection status
   graph.frame(settings);
   
-  //process and draw data
   if(connection != null)
   {
+    io.set(connection.getStatus());
     Frame frame = connection.frame();
-    //frame.compute(settings);
     graph.frame(frame, settings);
   }
+  else
+  {
+    io.set(STATUS_NULL);
+  }
+  
+  io.frame();
 }
 
 //forward the events to the control class
@@ -88,6 +101,7 @@ public void controlEvent(ControlEvent e)
 //creates a new connection object on the selected port
 public void connect()
 {
+  //close old connections
   if(connection != null)
   {
     connection.disconnect();
