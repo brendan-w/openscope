@@ -12,6 +12,7 @@
 
 uint16_t buffer[BUFFER_SIZE];
 uint16_t current = 0;
+boolean sweeping = false;
 
 uint8_t *pinSequence;
 uint8_t pinCount;
@@ -47,10 +48,23 @@ void setup()
 
 void loop()
 {
-  current = current % BUFFER_SIZE;
-  if(current == 0) { sendBuffer(); }
-  buffer[current] = analogRead(0);
-  current++;
+  if(!sweeping)
+  {
+    sweeping |= analogRead(0) > triggerValue;
+  }
+  else
+  {
+    buffer[current] = analogRead(0);
+    current++;
+    
+    if(current == BUFFER_SIZE)
+    {
+      sweeping = false;
+      current = 0;
+      sendBuffer();
+    }
+  }
+  
   delayMicroseconds(sampleDelay);
 }
 
