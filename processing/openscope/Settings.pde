@@ -2,6 +2,8 @@ private class Settings
 {
     public int port = 0;
     public boolean[] pins = new boolean[NUM_PINS];
+    public boolean frozen = false;
+    
     
     //voltage
     public float v_min = 0.0;

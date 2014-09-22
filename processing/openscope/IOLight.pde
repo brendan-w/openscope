@@ -2,7 +2,7 @@ public class IOLight
 {
   private int status;
   
-  private Rectangle rect = new Rectangle(130, 430, 10, 30);
+  private Rectangle rect = new Rectangle(50, 430, 10, 30);
   
   private final int FAIL_COLOR = color(100, 0, 0);
   private final int NULL_COLOR = color(40);

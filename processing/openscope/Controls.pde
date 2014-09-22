@@ -7,6 +7,8 @@ private class Controls
     private Group connection_group;
     private DropdownList port_list;
     private Button connect_button;
+    private Toggle freeze_toggle;
+    private Button save_button;
     
     private Group pin_group;
     private Toggle[] pin_toggle;
@@ -46,6 +48,10 @@ private class Controls
         {
           settings.port = int(port_list.getValue());
           connect();
+        }
+        else if(e.isFrom(freeze_toggle))
+        {
+          settings.frozen = ((int)freeze_toggle.value() == 1);
         }
         else if(e.isFrom(voltage_scale)) //VOLTAGE SCALE CHANGE
         {
@@ -187,22 +193,35 @@ private class Controls
                         .setBroadcast(true);
                         
         connect_button = cp5.addButton("Connect")
-                            .setPosition(10, 430)
-                            .setSize(120, 30);
+                            .setSize(80, 30)
+                            .setPosition(60, 430);
         
         String[] ports = Util.getPorts();
         
         port_list = cp5.addDropdownList("Port")
-                       .setPosition(10, 490)
                        .setItemHeight(15)
-                       .setWidth(120)
-                       .setBarHeight(15);
+                       .setWidth(40)
+                       .setBarHeight(30)
+                       .setPosition(10, 461);
                        
-        port_list.captionLabel().style().marginTop = 3;
+        port_list.getCaptionLabel().align(ControlP5.LEFT, ControlP5.CENTER)
+                                   .setPaddingX(4);
                        
         for(int i = 0; i < ports.length; i++)
         {
           port_list.addItem(ports[i], i);
         }
+        
+        
+        freeze_toggle = cp5.addToggle("Freeze")
+                           .setPosition(60, 470)
+                           .setSize(80, 20);
+        freeze_toggle.getCaptionLabel().align(ControlP5.LEFT, ControlP5.CENTER)
+                                       .setPaddingX(4);
+
+        save_button = cp5.addButton("Save")
+                            .setPosition(60, 500)
+                            .setSize(80, 20);
+                            
     }
 }

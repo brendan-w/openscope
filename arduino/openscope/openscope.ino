@@ -87,7 +87,7 @@ void sendSample(int p, int val)
   Serial.write(part2);
 }
 
-uint8_t pinForIndex(int i)
+uint8_t pinForIndex(uint16_t i)
 {
   return pinSequence[i % pinCount];
 }

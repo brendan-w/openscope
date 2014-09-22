@@ -30,7 +30,7 @@ public class Connection
         pushSettings(s);
     }
     
-    public Frame frame()
+    public Frame frame(Settings s)
     {
       if(port != null)
       {
@@ -41,7 +41,7 @@ public class Connection
           byte[] serialBuffer = port.readBytes();
           for(int i = 0; i < serialBuffer.length; i++)
           {
-            parseData(serialBuffer[i]);
+            parseData(serialBuffer[i], s.frozen);
           }
         }
       }
@@ -49,11 +49,11 @@ public class Connection
     }
     
     //method called every time a new byte is available
-    public void parseData(byte data)
+    public void parseData(byte data, boolean ignoreFinish)
     {
         if((data >> 7) == 0)
         {
-          if(data >> 6 == 1)
+          if((data >> 6 == 1) && !ignoreFinish)
           {
             //buffer has finished transmitting
             //stash the current state of the buffer

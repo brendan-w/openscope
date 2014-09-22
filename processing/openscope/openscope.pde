@@ -77,9 +77,9 @@ public void draw()
   
   if(connection != null)
   {
-    io.set(connection.getStatus());
-    Frame frame = connection.frame();
+    Frame frame = connection.frame(settings);
     graph.frame(frame, settings);
+    io.set(connection.getStatus());
   }
   else
   {
