@@ -45,7 +45,7 @@ private class Graph
             //label
             int yt = ((y - rect.top()) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
             String t = Util.prettyFloat(s.trigger_voltage) + " V";
-            text(t, rect.left() + TEXT_PAD, yt);
+            text(t, rect.right() - TEXT_PAD - textWidth(t), yt);
           }
         }
     }
@@ -73,6 +73,7 @@ private class Graph
             prev = p;
           }
         }
+        
     }
 }
 

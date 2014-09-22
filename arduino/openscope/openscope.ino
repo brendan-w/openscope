@@ -7,31 +7,20 @@
 #endif
 
 #define BUFFER_SIZE 900
+#define NUM_PINS 6
 
-//readings are 10 bits, so pack them to conserve memory 
-struct Values
-{
-  uint16_t a:10;
-  uint16_t b:10;
-  uint16_t c:10;
-  uint16_t d:10;
-  uint16_t e:10;
-  uint16_t f:10;
-  uint16_t g:10;
-  uint16_t h:10;
-};
 
 uint16_t buffer[BUFFER_SIZE];
 uint16_t current = 0;
 
+uint8_t *pinSequence;
+uint8_t pinCount;
+
 uint8_t mode = 0;
-uint8_t pinWatch = 1;
 uint8_t triggerSlope = 0;
 uint8_t triggerPin = 0;
 uint16_t triggerValue = 0;
 uint16_t sampleDelay = 250;
-
-
 
 void setup()
 {
@@ -40,6 +29,12 @@ void setup()
   cbi(ADCSRA,ADPS1);
   cbi(ADCSRA,ADPS0);
 
+  //default pin sequence
+  pinSequence = new uint8_t[1];
+  pinSequence[0] = 0;
+  pinCount = 1;
+
+  //clear the buffer
   for(int i = 0; i < BUFFER_SIZE; i++)
   {
     buffer[i] = 0;
@@ -47,7 +42,6 @@ void setup()
 
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
-
   Serial.begin(115200);
 }
 
@@ -65,36 +59,37 @@ void sendBuffer()
   digitalWrite(13, HIGH);
   for(int i = 0; i < BUFFER_SIZE; i++)
   {
-    sendPin(0, buffer[i]);
+    sendSample(0, buffer[i]);
   }
   Serial.write(0b01000000); //buffer finish status
   digitalWrite(13, LOW);
 }
 
-void sendPin(int p, int val)
+void sendSample(int p, int val)
 {
-  // 00pppxxx
-  // 1xxxxxxx
-        
-  //buffer finish
-  // 01000000
+  // 00pppvvv
+  // 1vvvvvvv
         
   //make sure that the signal is only 10 bits
-  val &= 0b1111111111; // xxxxxxxxxx
+  val &= 0b1111111111;
         
   //mark the high bits with message part IDs
-  uint8_t part1 = 0;  // 00000000
+  uint8_t part1 = 0;
 
   //add the pin number
   part1 |= p << 3;    // 00ppp000
-  part1 |= val >> 7;  // 00pppxxx
+  part1 |= val >> 7;  // 00pppvvv
         
   uint8_t part2 = 1 << 7;      // 10000000
-  part2 |= (val & 0b01111111); // 1xxxxxxx
+  part2 |= (val & 0b01111111); // 1vvvvvvv
 
-  //send
   Serial.write(part1);
   Serial.write(part2);
+}
+
+uint8_t pinForIndex(int i)
+{
+  return pinSequence[i % pinCount];
 }
 
 //called when a byte arrives from the computer
@@ -122,7 +117,7 @@ void serialEvent()
   switch(v >> 6)
   {
     case 0b00: //pins to read
-      pinWatch = v;
+      //loadPinSequence(v);
       break;
       
     case 0b01: //scope mode & trigger pin
@@ -132,31 +127,57 @@ void serialEvent()
       break;
       
     case 0b10: //trigger value
-      if(bitRead(v, 5) == 0)
+      if(bitRead(v, 5) == 0) //low bits have been sent
       {
-        //low bits have been sent
         triggerValue = 0;
         triggerValue |= (v & 0b00011111);
       }
-      else
+      else //high bits have been sent
       {
-        //high bits have been sent
         triggerValue |= ((v & 0b00011111) << 5);
       }
       break;
+      
     case 0b11: //sample delay
-      if(bitRead(v, 5) == 0)
+      if(bitRead(v, 5) == 0) //low bits have been sent
       {
-        //low bits have been sent
         sampleDelay = 0;
         sampleDelay |= (v & 0b00011111);
       }
-      else
+      else //high bits have been sent
       {
-        //high bits have been sent
         sampleDelay |= ((v & 0b00011111) << 5);
       }
       break;
   }
-  Serial.write(pinWatch);
 }
+
+void loadPinSequence(uint8_t pinWatch)
+{
+  delete[] pinSequence;
+  
+  //count how many pins are present
+  pinCount = 0;
+  for(int i = 0; i < NUM_PINS; i++)
+  {
+    if(bitRead(pinWatch, i) == 1)
+    {
+      pinCount++;
+    }
+  }
+  
+  //create the new sequence
+  pinSequence = new uint8_t[pinCount];
+  
+  //load the new sequence
+  pinCount = 0;
+  for(int i = 0; i < NUM_PINS; i++)
+  {
+    if(bitRead(pinWatch, i) == 1)
+    {
+      pinSequence[pinCount] = (uint8_t) i;
+      pinCount++;
+    }
+  }
+}
+

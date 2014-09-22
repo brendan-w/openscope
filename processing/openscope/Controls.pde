@@ -167,11 +167,11 @@ private class Controls
         
         //TRIGGER
         trig_slope = cp5.addRadioButton("Trigger Slope")
-                        .setPosition(10, 10)
-                        .setSize(40, 20)
+                        .setPosition(10, 35)
+                        .setSize(40, 15)
                         .setGroup(trig_set_group)
                         .setNoneSelectedAllowed(false)
-                        .setItemsPerRow(1)
+                        .setItemsPerRow(2)
                         .setSpacingColumn(50)
                         .addItem("+ Slope", 0)
                         .addItem("- Slope", 1)
@@ -179,8 +179,8 @@ private class Controls
                         
         trig_voltage = cp5.addSlider("Trigger Voltage")
                         .setBroadcast(false)
-                        .setSize(350, 15)
-                        .setPosition(120, 10)
+                        .setSize(460, 15)
+                        .setPosition(10, 10)
                         .setGroup(trig_set_group)
                         .setRange(0, VOLTAGE_MAX)
                         .setValue(settings.trigger_voltage)
