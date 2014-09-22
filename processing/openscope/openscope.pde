@@ -4,7 +4,9 @@
 
 //imports
 import java.awt.Point;
-import java.util.Iterator;
+import java.awt.Rectangle;
+import java.util.List;
+import java.util.ArrayList;
 import java.text.DecimalFormat;
 import processing.serial.*;
 import controlP5.*;

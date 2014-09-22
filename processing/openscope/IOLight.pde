@@ -2,8 +2,7 @@ public class IOLight
 {
   private int status;
   
-  private final Point position = new Point(130, 430);
-  private final Point size = new Point(10, 30);
+  private Rectangle rect = new Rectangle(130, 430, 10, 30);
   
   private final int FAIL_COLOR = color(100, 0, 0);
   private final int NULL_COLOR = color(40);
@@ -26,7 +25,7 @@ public class IOLight
       case STATUS_IDLE: fill(IDLE_COLOR); break;
       case STATUS_DATA: fill(DATA_COLOR); break;
     }
-    rect(position.x, position.y, size.x, size.y);
+    rect(rect.x, rect.y, rect.width, rect.height);
   }
   
   public void set(int i)

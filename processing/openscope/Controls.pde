@@ -198,6 +198,7 @@ private class Controls
         port_list = cp5.addDropdownList("Port")
                        .setPosition(10, 490)
                        .setItemHeight(15)
+                       .setWidth(120)
                        .setBarHeight(15);
                        
         port_list.captionLabel().style().marginTop = 3;

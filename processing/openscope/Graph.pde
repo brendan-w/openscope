@@ -2,17 +2,10 @@
 private class Graph
 {
     //constants
-    private final Point position = new Point(10, 10);
-    private final Point size = new Point(900, 400);
-    private final int top = position.y;
-    private final int bottom = position.y + size.y;
-    private final int left = position.x;
-    private final int right = position.x + size.x;
+    private Rect rect = new Rect(10, 10, 900, 400);
 
 
-    public Graph()
-    {
-    }
+    public Graph() {}
 
     //draw the background and voltage scales
     public void frame(Settings s)
@@ -21,21 +14,21 @@ private class Graph
         fill(FILL_COLOR);
         stroke(STROKE_COLOR);
         strokeWeight(1);
-        rect(position.x, position.y, size.x, size.y);
+        rect(rect.x, rect.y, rect.width, rect.height);
         
         //draw the voltage scale
         fill(255);
         for(int i = s.v_scale_start; i < s.v_scale_stop; i++)
         {
           float v = i * s.v_scale;
-          int y = (int) Util.map(v, s.v_min, s.v_max, bottom, top);
+          int y = (int) Util.map(v, s.v_min, s.v_max, rect.bottom(), rect.top());
           
-          line(left, y, right, y);
+          line(rect.left(), y, rect.right(), y);
           
           //label
-          int yt = ((y - top) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
+          int yt = ((y - rect.top()) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
           String t = Util.prettyFloat(v) + " V";
-          text(t, left + TEXT_PAD, yt);
+          text(t, rect.left() + TEXT_PAD, yt);
         }
         
         //draw the trigger line
@@ -44,15 +37,15 @@ private class Graph
           fill(TRIGGER_COLOR);
           stroke(TRIGGER_COLOR);
           strokeWeight(SIGNAL_WEIGHT);
-          int y = (int) Util.map(s.trigger_voltage, s.v_min, s.v_max, bottom, top);
-          if((y > top) && (y < bottom))
+          int y = (int) Util.map(s.trigger_voltage, s.v_min, s.v_max, rect.bottom(), rect.top());
+          if(rect.containsV(y))
           {
-            line(left, y, right, y);
+            line(rect.left(), y, rect.right(), y);
           
             //label
-            int yt = ((y - top) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
+            int yt = ((y - rect.top()) > LINE_HEIGHT) ? (y - TEXT_PAD) : (y + LINE_HEIGHT);
             String t = Util.prettyFloat(s.trigger_voltage) + " V";
-            text(t, left + TEXT_PAD, yt);
+            text(t, rect.left() + TEXT_PAD, yt);
           }
         }
     }
@@ -60,20 +53,9 @@ private class Graph
     //draw the data
     public void frame(Frame f, Settings s)
     {
+        f.computeGraph(s, rect);
         strokeWeight(1);
-        stroke(SIGNAL_COLORS[0]);
-        fill(SIGNAL_COLORS[0]);
-        for(int i = 0; i < f.size(); i++)
-        {
-          Sample sample = f.get(i);
-          float v = Util.readingToVoltage(sample.value);
-          
-          int y = (int) Util.map(v, s.v_min, s.v_max, bottom, top);
-          int x = (int) Util.map(i, 0, f.size() - 1, left, right);
-          
-          if((y > top) && (y < bottom))
-            point(x, y);
-        }
+        noFill();
     }
 }
 

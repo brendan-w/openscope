@@ -21,6 +21,14 @@ private class Settings
     public float trigger_voltage = VOLTAGE_MAX / 2;
 
 
+    public int hashCode()
+    {
+        int hash = 1;
+        hash = hash * 13 + Util.boolArrayToInt(pins);
+        hash = hash * ((int)(v_min * 1000 * 33)) ^ ((int)(v_max * 1000));
+        return hash;
+    }
+
     public void setV(float min, float max)
     {
       v_min = min;
