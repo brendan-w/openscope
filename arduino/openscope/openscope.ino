@@ -10,6 +10,25 @@
 #define NUM_PINS 6
 
 
+
+//readings are 10 bits, so pack them to conserve memory
+//lcm of 10 and 8 is 80 bits, hence the 8 parts
+struct Values
+{
+  uint16_t a:10;
+  uint16_t b:10;
+  uint16_t c:10;
+  uint16_t d:10;
+  uint16_t e:10;
+  uint16_t f:10;
+  uint16_t g:10;
+  uint16_t h:10;
+};
+
+
+
+
+
 uint16_t buffer[BUFFER_SIZE];
 uint16_t current = 0;
 boolean sweeping = false;
@@ -17,11 +36,13 @@ boolean sweeping = false;
 uint8_t *pinSequence;
 uint8_t pinCount;
 
-uint8_t mode = 0;
-uint8_t triggerSlope = 0;
-uint8_t triggerPin = 0;
-uint16_t triggerValue = 0;
-uint16_t sampleDelay = 250;
+uint8_t mode = 0;            //not used, here for future use only
+uint8_t triggerSlope = 0;    //0 = up, 1 = down
+uint8_t triggerPin = 0;      //pin to read for triggering
+uint16_t triggerValue = 0;   //0-1023 reading at which to trigger
+uint16_t sampleDelay = 250;  //microseconds between loops
+uint16_t lastValue = 0;      //used to detect slope
+
 
 void setup()
 {
@@ -50,7 +71,9 @@ void loop()
 {
   if(!sweeping)
   {
-    sweeping |= analogRead(0) > triggerValue;
+    uint16_t value = analogRead(0);
+    sweeping = value > triggerValue;
+    //lastValue = value;
   }
   else
   {
