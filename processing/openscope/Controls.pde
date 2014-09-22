@@ -150,24 +150,19 @@ private class Controls
         
         //VOLTAGE AND TIME
         voltage_scale = cp5.addRange("Voltage")
-                           .setBroadcast(false)
                            .setPosition(10, 10)
                            .setSize(500, 15)
                            .setRange(0, VOLTAGE_MAX)
                            .setRangeValues(settings.v_min, settings.v_max)
                            .setHandleSize(15)
-                           .setGroup(graph_scales)
-                           .setBroadcast(true);
+                           .setGroup(graph_scales);
                            
         time_scale = cp5.addSlider("Time")
-                           .setBroadcast(false)
                            .setPosition(10, 35)
                            .setSize(500, 15)
                            .setRange(0, 1023)
                            .setValue(settings.sample_delay)
-                           .setHandleSize(15)
-                           .setGroup(graph_scales)
-                           .setBroadcast(true);
+                           .setGroup(graph_scales);
         
         
         //TRIGGER
@@ -183,11 +178,13 @@ private class Controls
                         .activate(0);
                         
         trig_voltage = cp5.addSlider("Trigger Voltage")
+                        .setBroadcast(false)
                         .setSize(350, 15)
                         .setPosition(120, 10)
                         .setGroup(trig_set_group)
                         .setRange(0, VOLTAGE_MAX)
-                        .setValue(settings.trigger_voltage);  
+                        .setValue(settings.trigger_voltage)
+                        .setBroadcast(true);
                         
         connect_button = cp5.addButton("Connect")
                             .setPosition(10, 430)

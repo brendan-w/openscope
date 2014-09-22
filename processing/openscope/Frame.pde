@@ -15,6 +15,11 @@ public class Frame
     resetPoints();
   }
   
+  public List<Point> getPin(int p)
+  {
+    return pins.get(p);
+  }
+  
   //converts sample values into pixel values and line segments
   //handles clipping of graph area
   public void computeGraph(Settings settings, Rect rect)
@@ -25,7 +30,7 @@ public class Frame
     {
       resetPoints();
       makePoints(settings, rect);
-      clipPoints();
+      clipPoints(rect);
       
       computedFor = hash;
     }
@@ -65,8 +70,16 @@ public class Frame
     }
   }
   
-  private void clipPoints()
+  private void clipPoints(Rect rect)
   {
-    
+    //cheesy... for now
+    for(List<Point> pin : pins)
+    {
+      for(Point p : pin)
+      {
+        if(p.y > rect.bottom())   { p.y = rect.bottom(); }
+        else if(p.y < rect.top()) { p.y = rect.top(); }
+      }
+    }
   }
 }

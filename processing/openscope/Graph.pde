@@ -54,8 +54,25 @@ private class Graph
     public void frame(Frame f, Settings s)
     {
         f.computeGraph(s, rect);
-        strokeWeight(1);
+        strokeWeight(SIGNAL_WEIGHT);
         noFill();
+        
+        for(int pin = 0; pin < NUM_PINS; pin++)
+        {
+          stroke(SIGNAL_COLORS[pin]);
+          
+          Point prev = null;
+          
+          for(Point p : f.getPin(pin))
+          {
+            if(prev != null)
+            {
+              line(prev.x, prev.y, p.x, p.y);
+            }
+            
+            prev = p;
+          }
+        }
     }
 }
 
