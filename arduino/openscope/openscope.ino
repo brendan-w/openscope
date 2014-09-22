@@ -11,22 +11,6 @@
 
 
 
-//readings are 10 bits, so pack them to conserve memory
-//lcm of 10 and 8 is 80 bits, hence the 8 parts
-struct Values
-{
-  uint16_t a:10;
-  uint16_t b:10;
-  uint16_t c:10;
-  uint16_t d:10;
-  uint16_t e:10;
-  uint16_t f:10;
-  uint16_t g:10;
-  uint16_t h:10;
-};
-
-
-
 
 
 uint16_t buffer[BUFFER_SIZE];
@@ -124,6 +108,16 @@ void sendSample(int p, int val)
   Serial.write(part2);
 }
 
+void writeBuffer(uint16_t i, uint16_t value)
+{
+  
+}
+
+uint16_t readBuffer(uint16_t i)
+{
+  
+}
+
 uint8_t pinForIndex(uint16_t i)
 {
   return pinSequence[i % pinCount];
@@ -217,4 +211,3 @@ void loadPinSequence(uint8_t pinWatch)
     }
   }
 }
-
