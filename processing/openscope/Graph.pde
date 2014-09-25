@@ -53,6 +53,8 @@ private class Graph
     //draw the data
     public void frame(Frame f, Settings s)
     {
+      if(s.pinSelected)
+      {
         f.computeGraph(s, rect);
         strokeWeight(SIGNAL_WEIGHT);
         noFill();
@@ -73,6 +75,7 @@ private class Graph
             prev = p;
           }
         }
+      }
     }
 }
 

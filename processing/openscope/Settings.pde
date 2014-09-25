@@ -1,6 +1,7 @@
 private class Settings
 {
     public int port = 0;
+    public boolean pinSelected = true;
     public boolean[] pins = new boolean[NUM_PINS];
     public boolean frozen = false;
     
@@ -38,6 +39,18 @@ private class Settings
         hash = hash * 13 + Util.boolArrayToInt(pins);
         hash = hash * ((int)(v_min * 1000 * 33)) ^ ((int)(v_max * 1000));
         return hash;
+    }
+
+    public void setPin(int p, boolean value)
+    {
+      pins[p] = value;
+      
+      //refresh this value
+      pinSelected = false;
+      for(int i = 0; i < NUM_PINS; i++)
+      {
+        pinSelected |= pins[i];
+      }
     }
 
     public void setV(float min, float max)

@@ -87,7 +87,7 @@ private class Controls
           {
             if(e.isFrom(pin_toggle[i]))
             {
-              settings.pins[i] = pin_toggle[i].getState();
+              settings.setPin(i, pin_toggle[i].getState());
               updateRequired = true;
             }
           }
@@ -144,6 +144,7 @@ private class Controls
                                .setSize(20, 20)
                                .setGroup(pin_group)
                                .setState(settings.pins[i]);
+            pin_toggle[i].getCaptionLabel().setColor(SIGNAL_COLORS[i]);
             trig_pin_toggle.addItem("tA" + i, i);
             trig_pin_toggle.getItem(i).getCaptionLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE)
                                                         .setPaddingX(0)
