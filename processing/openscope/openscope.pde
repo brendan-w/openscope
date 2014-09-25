@@ -13,7 +13,7 @@ import controlP5.*;
 
 
 //constants
-private static final int BUFFER_SIZE = 900;
+private static final int BUFFER_SIZE = 850;
 private static final int SERIAL_RATE = 115200;
 private static final float VOLTAGE_MAX = 5.0;
 private static final int READING_MAX = 1024;

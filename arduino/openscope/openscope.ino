@@ -6,7 +6,7 @@
 	#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-#define BUFFER_SIZE 900
+#define BUFFER_SIZE 850
 #define NUM_PINS 6
 
 
@@ -21,6 +21,7 @@ uint8_t mode = 0;
 uint8_t triggerSlope = 0;
 uint8_t triggerPin = 0;
 uint16_t triggerValue = 0;
+uint16_t lastValue = 0;
 uint16_t sampleDelay = 250;
 
 void setup()
@@ -50,7 +51,17 @@ void loop()
 {
   if(!sweeping)
   {
-    sweeping |= analogRead(0) > triggerValue;
+    int value = analogRead(0);
+    switch(triggerSlope)
+    {
+      case 0: //up
+        sweeping = (value > triggerValue) && (lastValue <= triggerValue);
+        break;
+      case 1: //down
+        sweeping = (value < triggerValue) && (lastValue >= triggerValue);
+        break;
+    }
+    lastValue = value;
   }
   else
   {
@@ -59,9 +70,10 @@ void loop()
     
     if(current == BUFFER_SIZE)
     {
+      sendBuffer(); //also functions as a hacky holdoff
       sweeping = false;
       current = 0;
-      sendBuffer();
+      lastValue = analogRead(0); //re-read the trigger pin in pre for another trigger event
     }
   }
   

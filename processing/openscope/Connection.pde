@@ -90,8 +90,11 @@ public class Connection
         int pinWatch = Util.boolArrayToInt(s.pins); // 00pppppp
         
         int modeAndTrigPin = 1 << 6;
+        int trigPin = Math.max(s.trigger_pin, 0);
+        modeAndTrigPin = modeAndTrigPin | (s.trigger_slope << 3);
         
-        int trigValue = Util.voltageToReading(s.trigger_voltage);
+        
+        int trigValue = (s.trigger_pin >= 0) ? Util.voltageToReading(s.trigger_voltage) : 0;
         int trigValueP1 = (1 << 7);                             // 10000000
         int trigValueP2 = (1 << 7) | (1 << 5);                  // 10100000
         trigValueP1 = trigValueP1 | (trigValue & (16+8+4+2+1)); // 100vvvvv
