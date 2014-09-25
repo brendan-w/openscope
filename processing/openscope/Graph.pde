@@ -32,7 +32,7 @@ private class Graph
         }
         
         //draw the trigger line
-        if(s.trigger_pin != -1)
+        if(s.trigger)
         {
           fill(TRIGGER_COLOR);
           stroke(TRIGGER_COLOR);

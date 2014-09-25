@@ -89,9 +89,11 @@ public class Connection
       {
         int pinWatch = Util.boolArrayToInt(s.pins); // 00pppppp
         
-        int modeAndTrigPin = 1 << 6;
-        int trigPin = Math.max(s.trigger_pin, 0);
-        modeAndTrigPin = modeAndTrigPin | (s.trigger_slope << 3);
+        int trigModeAndPin = 1 << 6;
+        int trigMode = s.trigger ? (s.trigger_slope + 1) : 0;
+        
+        trigModeAndPin = trigModeAndPin | (trigMode << 3);
+        trigModeAndPin = trigModeAndPin | s.trigger_pin;
         
         
         int trigValue = (s.trigger_pin >= 0) ? Util.voltageToReading(s.trigger_voltage) : 0;
@@ -107,7 +109,7 @@ public class Connection
         delayP2 = delayP2 | (delay >> 5);             // 111vvvvv
         
         port.write(pinWatch);
-        port.write(modeAndTrigPin);
+        port.write(trigModeAndPin);
         port.write(trigValueP1);
         port.write(trigValueP2);
         port.write(delayP1);

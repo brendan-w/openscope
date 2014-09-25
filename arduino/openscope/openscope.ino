@@ -18,7 +18,7 @@ uint8_t *pinSequence;
 uint8_t pinCount;
 
 uint8_t mode = 0;
-uint8_t triggerSlope = 0;
+uint8_t triggerMode = 0;
 uint8_t triggerPin = 0;
 uint16_t triggerValue = 0;
 uint16_t lastValue = 0;
@@ -51,16 +51,21 @@ void loop()
 {
   if(!sweeping)
   {
-    int value = analogRead(0);
-    switch(triggerSlope)
+    int value = analogRead(0); //always read the pin
+    
+    switch(triggerMode)
     {
-      case 0: //up
+      case 0: //no trigger
+        sweeping = true;
+        break;
+      case 1: //up
         sweeping = (value > triggerValue) && (lastValue <= triggerValue);
         break;
-      case 1: //down
+      case 2: //down
         sweeping = (value < triggerValue) && (lastValue >= triggerValue);
         break;
     }
+    
     lastValue = value;
   }
   else
@@ -124,14 +129,14 @@ void serialEvent()
   /*
     p = pins to read
     m = scope mode
-    s = trigger slope
+    s = trigger mode (0 = no trigger, 1&2 = slope)
     t = trigger pin
     v = trigger value
     d = inter-sample delay
   */
   
   // 00pppppp
-  // 01mmsttt
+  // 01mmmttt
   // 100vvvvv
   // 101vvvvv
   // 110ddddd
@@ -147,8 +152,7 @@ void serialEvent()
       break;
       
     case 0b01: //scope mode & trigger pin
-      mode = (v & 0b00110000) >> 4;
-      triggerSlope = bitRead(v, 3);
+      triggerMode = (v & 0b00111000) >> 3;
       triggerPin = (v & 0b00000111);
       break;
       

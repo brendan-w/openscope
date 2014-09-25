@@ -70,7 +70,9 @@ private class Controls
         }
         else if(e.isFrom(trig_pin_toggle))
         {
-          settings.trigger_pin = (int) trig_pin_toggle.value();
+          int pin = (int) trig_pin_toggle.value();
+          settings.trigger = (pin >= 0);
+          settings.trigger_pin = Math.max(pin, 0);
           updateRequired = true;
         }
         else if(e.isFrom(trig_slope))
@@ -148,10 +150,10 @@ private class Controls
                                                         .setPaddingY(5);
         }
         
-        if(settings.trigger_pin == -1)
-          trig_pin_toggle.deactivateAll();
-        else
+        if(settings.trigger)
           trig_pin_toggle.activate(settings.trigger_pin);
+        else
+          trig_pin_toggle.deactivateAll();
         
         
         //VOLTAGE AND TIME

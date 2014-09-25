@@ -18,7 +18,7 @@ private class Settings
     public int delay_correction = 0; //time calibration
     
     public boolean trigger = false;
-    public int trigger_pin = -1;
+    public int trigger_pin = 0;
     public int trigger_slope = 0;
     public float trigger_voltage = VOLTAGE_MAX / 2;
 
