@@ -233,9 +233,10 @@ private class Controls
         freeze_toggle.getCaptionLabel().align(ControlP5.LEFT, ControlP5.CENTER)
                                        .setPaddingX(4);
 
+        /*
         save_button = cp5.addButton("Save")
                             .setPosition(60, 500)
                             .setSize(80, 20);
-                            
+        */                  
     }
 }
