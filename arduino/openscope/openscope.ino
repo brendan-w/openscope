@@ -32,9 +32,7 @@ void setup()
   cbi(ADCSRA,ADPS0);
 
   //default pin sequence
-  pinSchedule = new uint8_t[1];
-  pinSchedule[0] = 0;
-  pinCount = 1;
+  loadPinSchedule(0);
 
   //clear the buffer
   for(int i = 0; i < BUFFER_SIZE; i++)
@@ -196,17 +194,27 @@ void loadPinSchedule(uint8_t pinWatch)
     }
   }
   
-  //create the new sequence
-  pinSchedule = new uint8_t[pinCount];
-  
-  //load the new sequence
-  pinCount = 0;
-  for(int i = 0; i < NUM_PINS; i++)
+  if(pinCount == 0)
   {
-    if(bitRead(pinWatch, i) == 1)
+    //arrays of zero length do nasty things...
+    pinSchedule = new uint8_t[1];
+    pinSchedule[0] = 0;
+    pinCount = 1;
+  }
+  else
+  {
+    //create the new sequence
+    pinSchedule = new uint8_t[pinCount];
+  
+    //load the new sequence
+    pinCount = 0;
+    for(int i = 0; i < NUM_PINS; i++)
     {
-      pinSchedule[pinCount] = (uint8_t) i;
-      pinCount++;
+      if(bitRead(pinWatch, i) == 1)
+      {
+        pinSchedule[pinCount] = (uint8_t) i;
+        pinCount++;
+      }
     }
   }
 }
