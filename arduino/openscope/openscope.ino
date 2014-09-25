@@ -80,7 +80,8 @@ void loop()
     }
   }
   
-  delayMicroseconds(sampleDelay);
+  if(sampleDelay != 0)
+    delayMicroseconds(sampleDelay);
 }
 
 void sendBuffer()

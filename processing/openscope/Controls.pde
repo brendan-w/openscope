@@ -169,7 +169,7 @@ private class Controls
         time_scale = cp5.addSlider("Time")
                            .setPosition(10, 35)
                            .setSize(500, 15)
-                           .setRange(0, 1023)
+                           .setRange(0, 511)
                            .setValue(settings.sample_delay)
                            .setGroup(graph_scales);
         
