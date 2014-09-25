@@ -16,12 +16,13 @@ import controlP5.*;
 
 
 //constants
-private static final int BUFFER_SIZE = 800;    //size of the circular input buffer, and currently the size of frame objects
-private static final int SERIAL_RATE = 115200; //
-private static final int READING_MAX = 1023;   //max output from the arduino ADC
-private static final float VOLTAGE_MAX = 5.0;  //voltage ref
-private static final int NUM_PINS = 6;         //pins on the Arduino (used for filtering out bad values)
-private static final int DELAY_MAX = 511;      //max microseconds between reads on the Arduino
+private static final int BUFFER_SIZE = 800;     //size of the circular input buffer, and currently the size of frame objects
+private static final int SERIAL_RATE = 115200;  //
+private static final int READING_MAX = 1023;    //max output from the arduino ADC
+private static final float VOLTAGE_MAX = 5.0;   //voltage ref
+private static final int NUM_PINS = 6;          //pins on the Arduino (used for filtering out bad values)
+private static final int DELAY_MAX = 511;       //max microseconds between reads on the Arduino
+private static final int DELAY_CORRECTION = 39; //experimentally determined code execution time for the arduino (microseconds)
 
 //should be an enum, but processing doesn't "support" enums yet... too late in the game to switch environments. TODO
 //used by Connection and IOLight

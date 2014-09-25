@@ -20,7 +20,8 @@ private class Settings
     
     //time
     public int sample_delay = 250; //(microseconds)
-    public int delay_correction = 39; //experimentally determined code execution time for the arduino (microseconds)
+    public int microsPerSample = DELAY_CORRECTION;
+    public int time_scale = 1000; //microseconds scale increment
     public float sample_rate = 0.0; //computed sample rate in kHz
     
     public boolean trigger = false;
@@ -69,8 +70,17 @@ private class Settings
     
     private void computeRate()
     {
-      sample_rate = (float) 1000 / (sample_delay + delay_correction);
+      microsPerSample = sample_delay + DELAY_CORRECTION;
+      sample_rate = (float) 1000 / microsPerSample;
       sample_rate /= numPins;
+      
+      //precompute the scale for the graph
+      int totalTime = microsPerSample * BUFFER_SIZE;
+      if     (totalTime > 400000) { time_scale = 80000; }
+      else if(totalTime > 200000) { time_scale = 40000; }
+      else if(totalTime > 100000) { time_scale = 20000; }
+      else if(totalTime > 50000)  { time_scale = 10000; }
+      else                        { time_scale = 5000;  }
     }
 
     public void setV(float min, float max)

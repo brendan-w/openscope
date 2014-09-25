@@ -37,6 +37,21 @@ private class Graph
           text(t, rect.left() + TEXT_PAD, yt);
         }
         
+        //draw the time scale
+        int totalTime = BUFFER_SIZE * s.microsPerSample;
+        for(int i = s.time_scale; i < totalTime; i += s.time_scale)
+        {
+          int x = (int) Util.map((float) i, (float) 0, (float) totalTime, (float) 0, (float) rect.width);
+          x += rect.x;
+          
+          line(x, rect.top(), x, rect.bottom());
+          
+          String t = (i / 1000) + "ms";
+          int w = (int) textWidth(t);
+          int xt = ((rect.right() - x) > textWidth(t)) ? (x + TEXT_PAD) : (x - w - TEXT_PAD);
+          text(t, xt, rect.bottom() - TEXT_PAD);
+        }
+        
         //draw the trigger line
         if(s.trigger)
         {
