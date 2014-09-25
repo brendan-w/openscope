@@ -1,3 +1,10 @@
+
+/*
+  Manages serial connection, decoding of data, and pushing settings to the Arduino
+  Houses its own circular buffer, and dispenses frame objects when new data is available.
+  If no new data is available, only the latest frame object is returned
+*/
+
 public class Connection
 { 
     private Serial port;

@@ -1,5 +1,8 @@
 /*
-    Written by Brendan Whitfield
+  OpenScope
+  An open source oscilloscope built for the Arduino Uno rev3
+  
+  Written by Brendan Whitfield
 */
 
 //imports
@@ -13,14 +16,15 @@ import controlP5.*;
 
 
 //constants
-private static final int BUFFER_SIZE = 800;
-private static final int SERIAL_RATE = 115200;
-private static final float VOLTAGE_MAX = 5.0;
-private static final int READING_MAX = 1023;
-private static final int NUM_PINS = 6;
-private static final int DELAY_MAX = 511;
+private static final int BUFFER_SIZE = 800;    //size of the circular input buffer, and currently the size of frame objects
+private static final int SERIAL_RATE = 115200; //
+private static final int READING_MAX = 1023;   //max output from the arduino ADC
+private static final float VOLTAGE_MAX = 5.0;  //voltage ref
+private static final int NUM_PINS = 6;         //pins on the Arduino (used for filtering out bad values)
+private static final int DELAY_MAX = 511;      //max microseconds between reads on the Arduino
 
 //should be an enum, but processing doesn't "support" enums yet... too late in the game to switch environments. TODO
+//used by Connection and IOLight
 private final int STATUS_FAIL = -1;
 private final int STATUS_NULL = 0;
 private final int STATUS_IDLE = 1;

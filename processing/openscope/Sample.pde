@@ -1,3 +1,8 @@
+
+/*
+  represent one voltage reading forma single pin
+*/
+
 public class Sample
 {
   private int pin = 0;

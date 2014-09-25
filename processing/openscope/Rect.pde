@@ -1,3 +1,9 @@
+
+/*
+  A silly class to compute the edged of the rect
+  I cant believe this isn't already in the Rectangle Class...
+*/
+
 public class Rect extends Rectangle
 { 
   public Rect(int x, int y, int w, int h)

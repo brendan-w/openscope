@@ -1,9 +1,14 @@
 
+/*
+  drawing mechanism for frame objects
+  draws only the graph itself, and the signals in the given frame object
+  this class does NO point computation for samples. That is handled in the frame objcet
+*/
+
 private class Graph
 {
     //constants
     private Rect rect = new Rect(10, 10, 900, 400);
-
 
     public Graph() {}
 
@@ -54,7 +59,7 @@ private class Graph
     //draw the data
     public void frame(Frame f, Settings s)
     {
-      if(s.pinSelected)
+      if(s.numPins > 0)
       {
         f.computeGraph(s, rect);
         strokeWeight(SIGNAL_WEIGHT);

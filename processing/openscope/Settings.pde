@@ -1,18 +1,22 @@
+
+/*
+  holds control and display settings for the application
+*/
+
 private class Settings
 {
     public int port = 0;
-    public boolean pinSelected = true;
+    public int numPins = 0; //number of active pins
     public boolean[] pins = new boolean[NUM_PINS];
     public boolean frozen = false;
-    
     
     //voltage
     public float v_min = 0.0;
     public float v_max = VOLTAGE_MAX;
     public float v_delta = VOLTAGE_MAX;
-    public float v_scale = 1.0;
-    public int v_scale_start = 0;
-    public int v_scale_stop  = 5;
+    public float v_scale = 1.0;   //scale increment
+    public int v_scale_start = 0; //iterator start
+    public int v_scale_stop  = 5; //iterator stop
     
     //time
     public int sample_delay = 250; //(microseconds)
@@ -30,10 +34,11 @@ private class Settings
       //set the initial pin
       for(int i = 0; i < NUM_PINS; i++)
       {
-        pins[i] = (i == 0);
+        setPin(i, i == 0);
       }
     }
 
+    //used to prevent recomputing point values in a Frame object
     public int hashCode()
     {
         int hash = 1;
@@ -47,17 +52,25 @@ private class Settings
       pins[p] = value;
       
       //refresh this value
-      pinSelected = false;
+      numPins = 0;
       for(int i = 0; i < NUM_PINS; i++)
       {
-        pinSelected |= pins[i];
+        if(pins[i]) numPins++;
       }
+      
+      computeRate();
     }
 
     public void setDelay(int d)
     {
       sample_delay = d;
+      computeRate();
+    }
+    
+    private void computeRate()
+    {
       sample_rate = (float) 1000 / (sample_delay + delay_correction);
+      sample_rate /= numPins;
     }
 
     public void setV(float min, float max)

@@ -1,6 +1,10 @@
+
 /*
-  class for preproccessing snapshots of the buffer into drawable line segments
+  class for preproccessing snapshots of the buffer into drawable line segments.
+  seperates samples by pin number, and converts them to pixel point coordinates.
+  settings are hashed to avoid re-computing points for settings that haven't changed
 */
+
 public class Frame
 {
   private Sample[] samples;

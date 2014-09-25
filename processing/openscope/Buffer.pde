@@ -1,3 +1,10 @@
+
+/*
+  circular buffer for storing processed sample information from a connection
+  maintains an array of sample objects
+  buffer is cloned to a frame object for rendering upon toFrame()
+*/
+
 public class Buffer
 {
   private Sample[] buffer;

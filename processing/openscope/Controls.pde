@@ -1,3 +1,10 @@
+
+/*
+  manages controlP5 objects, control layout, and retrieving control values
+  values are stored in a Settings object that is distributed to the other components
+  calls updateArduino() if control changes need to be push to the Arduino
+*/
+
 private class Controls
 {
     private PApplet root;
