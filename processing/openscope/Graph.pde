@@ -14,6 +14,7 @@ private class Graph
         fill(FILL_COLOR);
         stroke(STROKE_COLOR);
         strokeWeight(1);
+        textSize(TEXT_SIZE);
         rect(rect.x, rect.y, rect.width, rect.height);
         
         //draw the voltage scale

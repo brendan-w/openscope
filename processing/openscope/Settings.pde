@@ -15,8 +15,9 @@ private class Settings
     public int v_scale_stop  = 5;
     
     //time
-    public int sample_delay = 250;
-    public int delay_correction = 0; //time calibration
+    public int sample_delay = 250; //(microseconds)
+    public int delay_correction = 39; //experimentally determined code execution time for the arduino (microseconds)
+    public float sample_rate = 0.0; //computed sample rate in kHz
     
     public boolean trigger = false;
     public int trigger_pin = 0;
@@ -51,6 +52,12 @@ private class Settings
       {
         pinSelected |= pins[i];
       }
+    }
+
+    public void setDelay(int d)
+    {
+      sample_delay = d;
+      sample_rate = (float) 1000 / (sample_delay + delay_correction);
     }
 
     public void setV(float min, float max)

@@ -60,7 +60,10 @@ private class Controls
         }
         else if(e.isFrom(time_scale)) //TIME SCALE CHANGE
         {
-          settings.sample_delay = (int) time_scale.getValue();
+          double normalized = Util.map(time_scale.getValue(), 0, DELAY_MAX, 0, 1);
+          double curved = Math.pow(normalized, 2); //attempt to make the sample rate slider roughly linear
+          int val = (int) Util.map((float) curved, 0, 1, 0, DELAY_MAX);
+          settings.setDelay(val);
           updateRequired = true;
         }
         else if(e.isFrom(trig_voltage))
@@ -166,12 +169,13 @@ private class Controls
                            .setHandleSize(15)
                            .setGroup(graph_scales);
                            
-        time_scale = cp5.addSlider("Time")
+        time_scale = cp5.addSlider("Rate")
                            .setPosition(10, 35)
                            .setSize(500, 15)
-                           .setRange(0, 511)
+                           .setRange(DELAY_MAX, 0) //backwards, because it actually adjusts sample delay
                            .setValue(settings.sample_delay)
                            .setGroup(graph_scales);
+        time_scale.valueLabel().setVisible(false);
         
         
         //TRIGGER

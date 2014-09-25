@@ -18,6 +18,7 @@ private static final int SERIAL_RATE = 115200;
 private static final float VOLTAGE_MAX = 5.0;
 private static final int READING_MAX = 1023;
 private static final int NUM_PINS = 6;
+private static final int DELAY_MAX = 511;
 
 //should be an enum, but processing doesn't "support" enums yet... too late in the game to switch environments. TODO
 private final int STATUS_FAIL = -1;
@@ -48,6 +49,7 @@ public Connection connection;
 public Controls controls;
 public Graph graph;
 public IOLight io;
+public Readout readout;
 
 
 public void setup()
@@ -63,6 +65,7 @@ public void setup()
     controls = new Controls(this);
     graph = new Graph();
     io = new IOLight();
+    readout = new Readout();
 }
 
 public void draw()
@@ -87,12 +90,12 @@ public void draw()
   }
   
   io.frame();
+  readout.frame(settings);
 }
 
 //forward the events to the control class
 public void controlEvent(ControlEvent e)
 {
-  println(e);
   //null check needed for when controls fire events upon creation
   if(controls != null)
   {
