@@ -23,6 +23,15 @@ private class Settings
     public float trigger_voltage = VOLTAGE_MAX / 2;
 
 
+    public Settings()
+    {
+      //set the initial pin
+      for(int i = 0; i < NUM_PINS; i++)
+      {
+        pins[i] = (i == 0);
+      }
+    }
+
     public int hashCode()
     {
         int hash = 1;

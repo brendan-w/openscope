@@ -5,8 +5,9 @@ public class Sample
   
   public void set(int _pin, int _value)
   {
-    pin = _pin;
-    value = _value;
+    //clamp and set the values
+    pin   = Math.max(0, Math.min(NUM_PINS - 1, _pin));
+    value = Math.max(0, Math.min(READING_MAX,  _value));
   }
   
   public Sample clone()

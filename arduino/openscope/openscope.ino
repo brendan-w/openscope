@@ -6,7 +6,7 @@
 	#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
-#define BUFFER_SIZE 850
+#define BUFFER_SIZE 800
 #define NUM_PINS 6
 
 
@@ -14,7 +14,7 @@ uint16_t buffer[BUFFER_SIZE];
 uint16_t current = 0;
 boolean sweeping = false;
 
-uint8_t *pinSequence;
+uint8_t *pinSchedule;
 uint8_t pinCount;
 
 uint8_t mode = 0;
@@ -32,8 +32,8 @@ void setup()
   cbi(ADCSRA,ADPS0);
 
   //default pin sequence
-  pinSequence = new uint8_t[1];
-  pinSequence[0] = 0;
+  pinSchedule = new uint8_t[1];
+  pinSchedule[0] = 0;
   pinCount = 1;
 
   //clear the buffer
@@ -51,7 +51,7 @@ void loop()
 {
   if(!sweeping)
   {
-    int value = analogRead(0); //always read the pin
+    int value = analogRead(triggerPin); //always read the pin
     
     switch(triggerMode)
     {
@@ -70,7 +70,7 @@ void loop()
   }
   else
   {
-    buffer[current] = analogRead(0);
+    buffer[current] = analogRead(pinForIndex(current));
     current++;
     
     if(current == BUFFER_SIZE)
@@ -78,7 +78,7 @@ void loop()
       sendBuffer(); //also functions as a hacky holdoff
       sweeping = false;
       current = 0;
-      lastValue = analogRead(0); //re-read the trigger pin in pre for another trigger event
+      lastValue = analogRead(triggerPin); //re-read the trigger pin in pre for another trigger event
     }
   }
   
@@ -90,7 +90,7 @@ void sendBuffer()
   digitalWrite(13, HIGH);
   for(int i = 0; i < BUFFER_SIZE; i++)
   {
-    sendSample(0, buffer[i]);
+    sendSample(pinForIndex(i), buffer[i]);
   }
   Serial.write(0b01000000); //buffer finish status
   digitalWrite(13, LOW);
@@ -120,7 +120,7 @@ void sendSample(int p, int val)
 
 uint8_t pinForIndex(uint16_t i)
 {
-  return pinSequence[i % pinCount];
+  return pinSchedule[i % pinCount];
 }
 
 //called when a byte arrives from the computer
@@ -148,7 +148,7 @@ void serialEvent()
   switch(v >> 6)
   {
     case 0b00: //pins to read
-      //loadPinSequence(v);
+      loadPinSchedule(v);
       break;
       
     case 0b01: //scope mode & trigger pin
@@ -182,9 +182,9 @@ void serialEvent()
   }
 }
 
-void loadPinSequence(uint8_t pinWatch)
+void loadPinSchedule(uint8_t pinWatch)
 {
-  delete[] pinSequence;
+  delete[] pinSchedule;
   
   //count how many pins are present
   pinCount = 0;
@@ -197,7 +197,7 @@ void loadPinSequence(uint8_t pinWatch)
   }
   
   //create the new sequence
-  pinSequence = new uint8_t[pinCount];
+  pinSchedule = new uint8_t[pinCount];
   
   //load the new sequence
   pinCount = 0;
@@ -205,7 +205,7 @@ void loadPinSequence(uint8_t pinWatch)
   {
     if(bitRead(pinWatch, i) == 1)
     {
-      pinSequence[pinCount] = (uint8_t) i;
+      pinSchedule[pinCount] = (uint8_t) i;
       pinCount++;
     }
   }

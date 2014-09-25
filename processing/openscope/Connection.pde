@@ -19,6 +19,7 @@ public class Connection
             String portName = Util.getPorts()[s.port];
             port = new Serial(root, portName, SERIAL_RATE);
             port.buffer(256);
+            pushSettings(s);
             status = STATUS_IDLE;
         }
         catch(ArrayIndexOutOfBoundsException e)
@@ -26,8 +27,6 @@ public class Connection
             status = STATUS_FAIL;
             println ("Failed to open serial port");
         }
-        
-        pushSettings(s);
     }
     
     public Frame frame(Settings s)
@@ -89,11 +88,11 @@ public class Connection
       {
         int pinWatch = Util.boolArrayToInt(s.pins); // 00pppppp
         
-        int trigModeAndPin = 1 << 6;
+        int trigModeAndPin = 1 << 6; //01000000
         int trigMode = s.trigger ? (s.trigger_slope + 1) : 0;
         
-        trigModeAndPin = trigModeAndPin | (trigMode << 3);
-        trigModeAndPin = trigModeAndPin | s.trigger_pin;
+        trigModeAndPin = trigModeAndPin | (trigMode << 3); //01mmm000
+        trigModeAndPin = trigModeAndPin | s.trigger_pin;   //01mmmttt
         
         
         int trigValue = (s.trigger_pin >= 0) ? Util.voltageToReading(s.trigger_voltage) : 0;

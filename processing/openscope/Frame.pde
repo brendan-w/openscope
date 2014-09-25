@@ -12,7 +12,12 @@ public class Frame
   {
     samples = source;
     computedFor = 0;
-    resetPoints();
+    
+    pins = new ArrayList<List<Point>>(NUM_PINS);
+    for(int i = 0; i < NUM_PINS; i++)
+    {
+      pins.add(new ArrayList<Point>());
+    }
   }
   
   public List<Point> getPin(int p)
@@ -39,10 +44,9 @@ public class Frame
   //dump old computed data
   private void resetPoints()
   {
-    pins = new ArrayList<List<Point>>(NUM_PINS);
     for(int i = 0; i < NUM_PINS; i++)
     {
-      pins.add(new ArrayList<Point>());
+      pins.get(i).clear();
     }
   }
   
@@ -65,7 +69,7 @@ public class Frame
         
       Point p = new Point((int) Math.round(x),
                           (int) Math.round(y));
-        
+      
       pins.get(s.getPin()).add(p);
     }
   }

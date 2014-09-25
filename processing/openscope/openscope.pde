@@ -13,10 +13,10 @@ import controlP5.*;
 
 
 //constants
-private static final int BUFFER_SIZE = 850;
+private static final int BUFFER_SIZE = 800;
 private static final int SERIAL_RATE = 115200;
 private static final float VOLTAGE_MAX = 5.0;
-private static final int READING_MAX = 1024;
+private static final int READING_MAX = 1023;
 private static final int NUM_PINS = 6;
 
 //should be an enum, but processing doesn't "support" enums yet... too late in the game to switch environments. TODO
